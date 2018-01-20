@@ -1,0 +1,491 @@
+homeassistant:
+  name: Thalles' Home
+  #Home location
+  latitude: !secret lat
+  longitude: !secret long
+  elevation: !secret elev
+  # metric for Metric, imperial for Imperial
+  unit_system: metric
+  time_zone: America/Sao_Paulo
+  # Customization file
+  customize: !include customize.yaml
+  customize_glob:
+    light.*:
+      custom_ui_state_card: custom-ui
+    cover.*:
+      custom_ui_state_card: custom-ui
+    switch.thalles_pc:
+      custom_ui_state_card: custom-ui
+    sensor.speedtest_download:
+      custom_ui_state_card: custom-ui
+    sensor.speedtest_ping:
+      custom_ui_state_card: custom-ui
+    sensor.speedtest_upload:
+      custom_ui_state_card: custom-ui
+    sensor.usd:
+      custom_ui_state_card: custom-ui
+    sensor.dark_sky_apparent_temperature:
+      custom_ui_state_card: custom-ui
+    sensor.dark_sky_daily_high_temperature:
+      custom_ui_state_card: custom-ui
+    sensor.dark_sky_daily_low_temperature:
+      custom_ui_state_card: custom-ui
+    sensor.dark_sky_humidity:
+      custom_ui_state_card: custom-ui
+    sensor.dark_sky_precip_intensity:
+      custom_ui_state_card: custom-ui
+    sensor.dark_sky_precip_probability:
+      custom_ui_state_card: custom-ui
+    sensor.dark_sky_summary:
+      custom_ui_state_card: custom-ui
+    sensor.dark_sky_temperature:
+      custom_ui_state_card: custom-ui
+    sensor.moon:
+      custom_ui_state_card: custom-ui
+    sensor.thaless_iphone_7_battery_level:
+      custom_ui_state_card: custom-ui
+    sensor.thaless_iphone_7_battery_state:
+      custom_ui_state_card: custom-ui
+#Zones
+zone:
+  - name: School
+    latitude: !secret schoollat
+    longitude: !secret schoollong
+    radius: 50
+    icon: mdi:school
+    track_ios: true
+
+  - name: Home
+    latitude: !secret homelat
+    longitude: !secret homelong
+    radius: 80
+    icon: mdi:home
+    track_ios: true
+# Enables the frontend
+frontend: !include frontend.yaml
+# Enables configuration UI
+config:
+http:
+  api_password: !secret http_password
+# api_password: ediaccess
+  base_url: !secret baseurl
+  ssl_certificate: /ssl/fullchain.pem
+  ssl_key: /ssl/privkey.pem
+  ip_ban_enabled: True
+  login_attempts_threshold: 5
+updater:
+
+discovery:
+
+# Allows you to issue voice commands from the frontend in enabled browsers
+conversation:
+
+# Enables support for tracking state changes over time
+history:
+
+# View all events in a logbook
+logbook:
+  
+zeroconf:
+
+ios:
+
+camera:
+  - platform: mjpeg
+    name: Frontdoor Camera
+    mjpeg_url: http://192.168.1.6/video/mjpg.cgi
+    still_image_url: http://192.168.1.6/image.jpg
+    username: admin
+    password: !secret frontdoorcamerapass
+
+#alarm_control_panel:
+ # - platform: manual
+  #  name: Home Alarm
+   # code: !secret alarmcode
+   # pending_time: 30
+   # trigger_time: 30
+
+notify:
+  - name: wall tablet
+    platform: lannouncer
+    host: 192.168.1.7
+    port: 1035
+
+  - platform: ios
+    name: ios
+    target: !secret iostarget
+
+  - name: Wall Tablet Bedroom
+    platform: pushbullet
+    api_key: !secret pushbullet_api
+
+  - name: html5
+    platform: html5
+    gcm_api_key: !secret html5apikey
+    gcm_sender_id: !secret html5senderid
+# Enables a map showing the location of tracked devices
+map:
+
+# Track the sun
+sun:
+
+mqtt:
+  broker: !secret mqttbroker
+  client_id: !secret mqttclient
+  username: !secret mqttuser
+  password: !secret mqttpass
+
+media_player:
+  - platform: mpd
+    host: 192.168.1.2
+  - platform: kodi
+    host: 192.168.1.3
+    port: 8050
+    username: !secret kodiuser
+    password: !secret kodipass
+    turn_off_action:
+      service: media_player.kodi_call_method
+      data:
+        entity_id: media_player.kodi
+        method: Application.Quit
+  - platform: cast
+    host: 192.168.1.7
+  - platform: spotify
+    client_id: !secret spotifyclient
+    client_secret: !secret spotifysecret
+  #- platform: mpchc
+  #  name: MP CHC
+  #  port: 13579
+  #  host: http://192.168.1.4
+#android_ip_webcam:
+ # - host: 192.168.1.7
+ #   port: 8080
+ #   username: !secret ipcamuser
+ #   password: !secret ipcampass
+ #   sensors:
+ #     - audio_connections
+ #     - battery_level
+ #     - battery_temp
+ #     - battery_voltage
+ #     - light
+ #     - motion
+ #     - pressure
+ #   switches:
+ #     - exposure_lock
+ #     - ffc
+ #     - focus
+ #     - gps_active
+ #     - night_vision
+ #     - overlay
+ #     - torch
+ #     - whitebalance_lock
+ #     - video_recording
+# Weather prediction
+input_number:
+  alarm_clock_hour:
+    initial: 8
+    min: 0
+    max: 23
+    step: 1
+  alarm_clock_minute:
+    initial: 30
+    min: 0
+    max: 55
+    step: 5
+  volume_radio:
+    name: Volume
+    icon: mdi:volume-high
+    min: 0
+    max: 15
+    step: 1
+
+input_select:
+  pcoptions:
+    name: PC Power Options
+    options:
+      - Restart
+      - Shutdown
+      - None
+      - Sleep
+      - Lock
+    initial: None
+    icon: mdi:monitor
+  radio_station:
+    name: 'Select Radio Station:'
+    options:
+      - Coca Cola FM
+      - Los Santos Rock
+      - Truckers FM
+      - Q-Music
+      - 3FM
+      - 100% NL
+      - Veronica
+      - Sky Radio
+      - Arrow Classic Rock
+      - Classic FM
+      - BNR Nieuwsradio
+      - SLAM! Hardstyle
+      - Sleep Radio
+      - Ambient Sleeping Pill
+      - Radio Art - Sleep
+      - Ambi Nature Radio
+      - Calm Radio - Sleep
+      - Dinamo.FM Sleep
+
+  chromecast_radio:
+    name: 'Select Speakers:'
+    options:
+      - Bedroom
+      - Livingroom
+    initial: Bedroom
+    icon: mdi:speaker-wireless
+
+input_boolean:
+  study_time:
+    name: Study Time
+    initial: off
+
+  alarm_clock_status:
+    initial: on
+
+  dark_theme_status:
+    initial: on
+
+  good_morning_summary:
+    name: Speak the weather and traffic
+    initial: off
+cover:
+  - platform: mqtt
+    name: "Bedroom Blinds"
+    command_topic: "home-assistant/cover/set"
+    state_topic: "home-assistant/cover/state"
+    availability_topic: "home-assistant/cover/availability"
+    qos: 0
+    retain: true
+    payload_open: "OPEN"
+    payload_close: "CLOSE"
+    payload_stop: "STOP"
+    state_open: "open"
+    state_closed: "closed"
+    payload_available: "online"
+    payload_not_available: "offline"
+    optimistic: false
+    value_template: '{{ value.x }}'
+    tilt_command_topic: 'home-assistant/cover/tilt'
+    tilt_status_topic: 'home-assistant/cover/tilt-state'
+    tilt_min: 0
+    tilt_max: 180
+    tilt_closed_value: 70
+    tilt_opened_value: 180
+fan:
+  - platform: mqtt
+    name: Ceiling Fan
+    state_topic: "Ceiling_Fan/on/state"
+    command_topic: "Ceiling_Fan/on/set"
+    oscillation_state_topic: "Ceiling_Fan/oscillation/state"
+    oscillation_command_topic: "Ceiling_Fan/oscillation/set"
+    speed_state_topic: "Ceiling_Fan/speed/state"
+    speed_command_topic: "Ceiling_Fan/speed/set"
+    qos: 0
+    payload_on: "true"
+    payload_off: "false"
+    payload_oscillation_on: "true"
+    payload_oscillation_off: "false"
+    payload_low_speed: "low"
+    payload_medium_speed: "medium"
+    payload_high_speed: "high"
+    speeds:
+      - low
+      - medium
+      - high
+  - platform: mqtt
+    name: Ceiling Fan l
+    state_topic: "Ceiling_Fan_l/on/state"
+    command_topic: "Ceiling_Fan_l/on/set"
+    oscillation_state_topic: "Ceiling_Fan_l/oscillation/state"
+    oscillation_command_topic: "Ceiling_Fan_l/oscillation/set"
+    speed_state_topic: "Ceiling_Fan_l/speed/state"
+    speed_command_topic: "Ceiling_Fan_l/speed/set"
+    qos: 0
+    payload_on: "true"
+    payload_off: "false"
+    payload_oscillation_on: "true"
+    payload_oscillation_off: "false"
+    payload_low_speed: "low"
+    payload_medium_speed: "medium"
+    payload_high_speed: "high"
+    speeds:
+      - low
+      - medium
+      - high
+light:
+  - platform: yeelight
+    devices:
+      192.168.1.5:
+        name: Ceiling Light
+        transition: 1000
+switch:
+  - platform: command_line
+    switches:
+      pihole_temp_disable:
+        command_on: !secret piholecmdon
+        command_off: !secret piholecmdoff
+
+  - platform: wake_on_lan
+    name: "Thalles' PC"
+    mac_address: !secret thalespcmac
+    host: "192.168.1.3"
+    turn_off:
+      service: shell_command.shutdown_pc
+      
+  - platform: wake_on_lan
+    name: "iMac"
+    mac_address: !secret macosmac
+    host: !secret macoshost
+    turn_off:
+      service: shell_command.shutdown_mac
+
+shell_command:
+  shutdown_pc: '/usr/bin/curl -X GET "http://192.168.1.3:7760/poweroff"'
+  restart_pc: '/usr/bin/curl -X GET "http://192.168.1.3:7760/reboot"'
+  lock_pc: '/usr/bin/curl -X GET "http://192.168.1.3:7760/lock"'
+  sleep_pc: '/usr/bin/curl -X GET "http://192.168.1.3:7760/suspend"'
+  shutdown_mac: !secret macshutdown
+
+# Weather Prediction
+sensor:
+  - platform: currencylayer
+    api_key: !secret currencylayerapi
+    base: USD
+    quote:
+      - BRL
+
+  - platform: command_line
+    name: CPU Temp
+    command: "/bin/cat /sys/class/thermal/thermal_zone0/temp"
+    unit_of_measurement: "ºC"
+    value_template: '{{ value | multiply(0.001) | round(2) }}'
+
+ # - platform: pi_hole
+  #  host: 192.168.1.2
+   # ssl: true
+   # monitored_conditions:
+    #  - ads_blocked_today
+     # - ads_percentage_today
+     # - dns_queries_today
+     # - unique_clients
+  
+  - platform: systemmonitor
+    resources:
+      - type: disk_use_percent
+        arg: /home
+      - type: disk_free
+        arg: /home
+      - type: memory_use_percent
+      - type: processor_use
+  
+  - platform: uptime
+    name: Hassio Uptime
+    unit_of_measurement: hours
+
+  - platform: steam_online
+    api_key: !secret steam_api
+    accounts:
+      - !secret steamthales #Thalles
+      - !secret steamHartman #Hartman
+      - !secret steamsamuel #samuel
+      - !secret steampaulo #paulo
+      - !secret steamaturzin #aturzin
+      - !secret steamsherif #sherif
+      - !secret steamcarol #carol
+      - !secret steamleo #leo
+      - !secret steamluciano #luciano
+      - !secret steamluke #luke
+ 
+  - platform: google_travel_time
+    api_key: !secret traveltime
+    origin: zone.home
+    destination: zone.school
+    name: Home to School
+    options:
+      arrival_time: '07:00:00'
+      mode: walking
+
+  - platform: darksky
+    api_key: !secret darksky_api
+    monitored_conditions:
+      - temperature_max
+      - temperature_min
+      - temperature
+      - apparent_temperature
+      - humidity
+      - summary
+      - precip_intensity
+      - precip_probability
+      - nearest_storm_distance
+      - hourly_summary
+      - wind_speed
+      - pressure
+      - wind_bearing
+      - icon
+    units: si
+ 
+  - platform: speedtest
+    server_id: 5846 
+    minute:
+      - 1
+      - 0
+    monitored_conditions:
+      - ping
+      - download
+      - upload
+ 
+  - platform: time_date
+    display_options:
+      - 'time'
+ 
+  - platform: template
+    sensors:
+      alarm_clock_hour:
+        value_template: '{{ states.input_number.alarm_clock_hour.state | int }}'
+      alarm_clock_minute:
+        value_template: '{{ states.input_number.alarm_clock_minute.state | int }}'
+      alarm_clock_time:
+        value_template: >-
+          {{ states.sensor.alarm_clock_hour.state }}:
+          {%- if states.sensor.alarm_clock_minute.state|length == 1 -%}
+            0
+          {%- endif -%}
+            {{ states.sensor.alarm_clock_minute.state }}
+      alarm_clock_time_long:
+        value_template: >-
+          {% if states.sensor.alarm_clock_hour.state|length == 1 -%}
+            0
+          {%- endif -%}
+            {{ states.sensor.alarm_clock_hour.state }}:
+          {%- if states.sensor.alarm_clock_minute.state|length == 1 -%}
+            0
+          {%- endif -%}
+            {{ states.sensor.alarm_clock_minute.state }}
+ 
+  - platform: moon
+
+tts:
+  - platform: google
+    language: 'en'
+
+alarm_control_panel: !include alarm.yaml
+panel_custom: !include panel_custom.yaml
+
+panel_iframe:
+  
+  configurator:
+    title: 'Configurator'
+    icon: mdi:note-text
+    url: !secret configuratorurl
+
+group: !include groups.yaml
+automation: !include automations.yaml
+script: !include scripts.yaml
+binary_sensor: !include binary_sensors.yaml
+

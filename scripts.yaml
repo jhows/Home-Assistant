@@ -1,0 +1,222 @@
+  light_notify:
+    alias: 'Notification in lights'
+    sequence:
+      - service: light.turn_on
+        data:
+          entity_id: light.ceiling_light
+          effect: Facebook
+      - delay: 0:0:3
+      - service: light.turn_off
+        data:
+          entity_id: light.ceiling_light
+  alarm_light:
+    alias: 'light on alarm'
+    sequence:
+      - service: light.turn_on
+        data:
+          entity_id: group.all_lights
+          effect: Police2
+      - service: script.alarm_sound
+  alarm_sound:
+    alias: 'alarm sound'
+    sequence:
+      - service: media_player.volume_set
+        entity_id: media_player.mpd
+        data:
+          volume_level: 0.50
+      - service: media_player.play_media
+        data_template:
+          entity_id: media_player.mpd
+          media_content_id: !secret scriptalarmurl
+          media_content_type: audio/mp3
+      - delay: 0:1:45
+      - service: media_player.play_media
+        data_template:
+          entity_id: media_player.mpd
+          media_content_id: !secret scriptalarmurl
+          media_content_type: audio/mp3
+      - delay: 0:1:45
+      - service: script.turn_on
+        data:
+          entity_id: script.alarm_sound
+  alarm_off:
+    alias: 'turn off alarm'
+    sequence:
+      - service: script.turn_off
+        data: 
+          entity_id: script.alarm_sound
+      - service: media_player.media_stop
+        data_template:
+          entity_id: media_player.mpd
+      - service: light.turn_off
+        data:
+          entity_id: group.all_lights
+      - delay: 0:0:2
+      - service: light.turn_on
+        data:
+          entity_id: group.all_lights
+  #recorder on
+  turn_recorder_on:
+    alias: 'recorder on'
+    sequence:
+      - service: switch.turn_on
+        data:
+          entity_id: switch.ip_webcam_video_recording
+  #recorder off
+  turn_recorder_off:
+    alias: 'recorder off'
+    sequence:
+      - service: switch.turn_off
+        data:
+          entity_id: switch.ip_webcam_video_recording
+  #study time
+  study_time:
+    alias: 'study time'
+    sequence:
+      - service: media_player.play_media
+        data:
+          entity_id: media_player.bedroom_wall
+          media_content_type: audio/mp3
+        data_template:
+          media_content_id: >
+            {{ ["http://192.168.1.2:8123/local/sounds/study01.mp3", "http://192.168.1.2:8123/local/sounds/study01.mp3", "http://192.168.1.2:8123/local/sounds/study01.mp3"] | random}}
+      - service: light.turn_on
+        data:
+          entity_id: light.ceiling_light
+          brightness: 10
+  #alarm
+  alarm:
+    sequence:
+      - service: media_player.volume_set
+        entity_id: media_player.bedroom_wall
+        data:
+          volume_level: 0.50
+      - service: media_player.media_stop
+        data_template:
+          entity_id: media_player.bedroom_wall
+          media_content_id: https://partofthething.com/thoughts/wp-content/uploads/2016/08/burglar.mp3
+          media_content_type: audio/mp3
+  #pause radio
+  radio_pause:
+    alias: Stop radio
+    sequence:
+      - service: media_player.media_stop
+        data_template:
+          entity_id: >
+            {% if is_state("input_select.chromecast_radio", "Bedroom") %} media_player.bedroom_wall
+            {% elif is_state("input_select.chromecast_radio", "Livingroom") %} media_player.bedroom_wall
+            {% endif %}
+  #radio on chromecast
+  radio538:
+    alias: Play Radio on Chromecast Audio
+    sequence:
+      - service: media_player.volume_set
+        data:
+          entity_id: media_player.bedroom_wall
+          volume_level: '0.35'
+      - service: media_player.play_media
+        data_template:
+          entity_id: >
+            {% if is_state("input_select.chromecast_radio", "Bedroom") %} media_player.bedroom_wall
+            {% elif is_state("input_select.chromecast_radio", "Livingroom") %} media_player.bedroom_wall
+            {% endif %}
+          media_content_id: >
+            {% if is_state("input_select.radio_station", "Coca Cola FM") %} http://ic.imusicaradios.com.br:8000/brasil.stream.http
+            {% elif is_state("input_select.radio_station", "Los Santos Rock") %} http://192.168.1.2:8123/local/sounds/lossantosrock.mp3
+            {% elif is_state("input_select.radio_station", "Truckers FM") %}  https://radio.truckers.fm
+            {% elif is_state("input_select.radio_station", "Q-Music") %} http://icecast-qmusic.cdp.triple-it.nl/Qmusic_nl_live_96.mp3
+            {% elif is_state("input_select.radio_station", "3FM") %} http://icecast.omroep.nl/3fm-bb-mp3
+            {% elif is_state("input_select.radio_station", "100% NL") %} http://stream.100p.nl/100pctnl.mp3
+            {% elif is_state("input_select.radio_station", "Veronica") %} http://8543.live.streamtheworld.com/VERONICACMP3
+            {% elif is_state("input_select.radio_station", "Sky Radio") %} http://8623.live.streamtheworld.com:80/SKYRADIOAAC_SC
+            {% elif is_state("input_select.radio_station", "Arrow Classic Rock") %} http://91.221.151.155/listen.mp3
+            {% elif is_state("input_select.radio_station", "Classic FM") %} http://19143.live.streamtheworld.com/CLASSICFM_SC
+            {% elif is_state("input_select.radio_station", "BNR Nieuwsradio") %} http://icecast-bnr.cdp.triple-it.nl/bnr_mp3_96_03
+            {% elif is_state("input_select.radio_station", "SLAM! Hardstyle") %} http://vip-icecast.538.lw.triple-it.nl/WEB17_MP3
+            {% elif is_state("input_select.radio_station", "Sleep Radio") %} http://37.59.28.208:8722/stream
+            {% elif is_state("input_select.radio_station", "Ambient Sleeping Pill") %} http://perseus.shoutca.st:8447/h
+            {% elif is_state("input_select.radio_station", "Radio Art - Sleep") %} http://live.radioart.com/fSleep.mp3
+            {% elif is_state("input_select.radio_station", "Ambi Nature Radio") %} http://94.23.252.14:8067/stream
+            {% elif is_state("input_select.radio_station", "Calm Radio - Sleep") %} http://streams.calmradio.com/api/39/128/stream
+            {% elif is_state("input_select.radio_station", "Dinamo.FM Sleep") %} http://channels.dinamo.fm/sleep-aac
+            {% endif %}
+          media_content_type: 'audio/mp4'
+  #good night
+  good_night:
+    sequence:
+      - service: light.turn_off
+        data:
+          entity_id: light.ceiling_light
+      - service: switch.turn_off
+        data:
+          entity_id: switch.thalles_pc
+      - service: media_player.volume_set
+        data: 
+          entity_id: media_player.bedroom_wall
+          volume_level: 1.00
+      - service: tts.google_say
+        entity_id: media_player.bedroom_wall
+        data_template:
+          message: >-
+            {{ ["Good night. " , "Good evening. " , "Sweet dreams. " , "See you tomorrow. " , "Have a wonderful night. " , "See you soon. "] |random }}
+  #test with ceiling light
+  xmas_on:
+    sequence:
+      - service: light.turn_on
+        data: 
+          entity_id: light.ceiling_light
+          brightness: 255
+          transition: 10
+  xmas_off:
+    sequence:
+      - service: light.turn_off
+        data: 
+          entity_id: light.ceiling_light
+  wake_up:
+    sequence:
+      - service: light.turn_on
+        data: 
+          entity_id: light.ceiling_light
+          brightness: 255
+          transition: 120
+  rain_radar_push:
+    alias: 'Rain Radar-Push'
+    sequence:
+      - service: notify.ios_thaless_iphone_7
+        data:
+          message: It might rain soon!  There is a storm reported {{ states("sensor.dark_sky_nearest_storm_distance") }} mile(s) away!
+          data:
+            attachment:
+              url: http://radblast.wunderground.com/cgi-bin/radar/WUNIDS_map?station=GRK&brand=wui&num=6&delay=15&type=N0R&frame=0&scale=0.25&noclutter=0&showstorms=0&mapx=400&mapy=240&centerx=316&centery=632&transx=-84&transy=392&showlabels=1&severe=0&rainsnow=0&lightning=0&smooth=0&rand=25051478&lat=0&lon=0&label=you
+              content-type: gif
+  pc_off_push:
+    alias: 'Pc off notification'
+    sequence:
+      - service: notify.ios_thaless_iphone_7
+        data:
+          message: 'Gaming PC are turned off!'
+          title: "Home Assistant"
+          data:
+            push:
+              sound: "gamingpcturnedoff.wav"
+  pc_on_push:
+    alias: 'Pc on notification'
+    sequence:
+      - service: notify.ios_thaless_iphone_7
+        data:
+          message: 'Gaming PC are turned on!'
+          title: "Home Assistant"
+          data:
+            push:
+              sound: "gamingpcturnedon.wav"
+  goodmorning_informations:
+    alias: 'Notification about things at morning'
+    sequence:
+      - service: notify.ios_thaless_iphone_7
+        data_template:
+          message: >
+            Good morning.
+            It's currently {{states.sensor.dark_sky_summary.state}} and {{states.sensor.dark_sky_temperature.state|round}} degrees.
+            The weather for the next 24 hours is {{states ('sensor.dark_sky_hourly_summary') }}
+            Today you can expect {{states.sensor.dark_sky_hourly_summary.state}}.
+            With a high of {{states.sensor.dark_sky_daily_high_temperature.state|round|int}} and a low of {{states.sensor.dark_sky_daily_low_temperature.state|round|int}}.

@@ -1,0 +1,539 @@
+  - alias: 'pc restart'
+    trigger:
+      platform: state
+      entity_id: input_select.pcoptions
+      to: "Restart"
+    action:
+      - service: shell_command.restart_pc
+  - alias: 'pc shutdown'
+    trigger:
+      platform: state
+      entity_id: input_select.pcoptions
+      to: "Shutdown"
+    action:
+      - service: shell_command.shutdown_pc
+  - alias: 'pc lock'
+    trigger:
+      platform: state
+      entity_id: input_select.pcoptions
+      to: "Lock"
+    action:
+      - service: shell_command.lock_pc
+  - alias: 'pc sleep'
+    trigger:
+      platform: state
+      entity_id: input_select.pcoptions
+      to: "Sleep"
+    action:
+      - service: shell_command.sleep_pc   
+  #record video when motion is detected at bedroom
+  - alias: "Bedroom video recorder motion"
+    trigger:
+      - platform: numeric_state
+        entity_id: sensor.ip_webcam_motion
+        above: 900
+    action:
+      - service: script.turn_recorder_on
+      - delay: 0:5
+      - service: script.turn_recorder_off
+
+  #battery alert
+  - alias: "Wall tablet batery alert"
+    trigger:
+      - platform: numeric_state
+        entity_id: sensor.ip_webcam_battery_level
+        below: '20'
+    action:
+      - service: tts.google_say
+        entity_id: media_player.bedroom_wall
+        data:
+          message: 'Low battery on bedroom wall tablet!'
+      - service: notify.ios_thaless_iphone_7
+        data:
+          title: "Alert!"
+          message: "Low battery on bedroom wall tablet!"
+  #study switch
+  - alias: 'study time on'
+    trigger:
+      platform: state
+      entity_id: input_boolean.study_time
+      from: 'off'
+      to: 'on'
+    action:
+      service: script.study_time
+  - alias: 'study time off'
+    trigger:
+      platform: state
+      entity_id: input_boolean.study_time
+      from: 'on'
+      to: 'off'
+    action:
+      - service: media_player.media_stop
+        data_template:
+          entity_id: media_player.bedroom_wall
+  #radio
+  - alias: 'Set Radio Volume'
+    trigger:
+      platform: state
+      entity_id: input_number.volume_radio
+    action:
+      service: media_player.volume_set
+      data_template:
+        entity_id: >
+          {% if is_state("input_select.chromecast_radio", "Bedroom") %} media_player.bedroom_wall
+          {% elif is_state("input_select.chromecast_radio", "Livingroom") %} media_player.bedroom_wall
+          {% endif %}
+        volume_level: '{{  states.input_number.volume_radio.state  }}'
+  #arm alarm at night if ha restart
+  - alias: 'Arm alarm if restart'
+    initial_state: 'on'
+    trigger:
+     - platform: homeassistant
+       event: start
+    condition:
+      condition: and
+      conditions:
+        - condition: state
+          entity_id: group.all_devices
+          state: home
+        - condition: sun
+          after: sunset
+        - condition: sun
+          before: sunrise
+    action:
+      service: alarm_control_panel.alarm_arm_home
+      data:
+        entity_id: alarm_control_panel.home_alarm
+        code: !secret alarmcode
+  #arm alarm at night
+  - alias: 'Arm alarm at night'
+    trigger:
+      platform: time
+      at: "22:00:00"
+    condition:
+      condition: state
+      entity_id: group.all_devices
+      state: home
+    action:
+      service: alarm_control_panel.alarm_arm_home
+      data:
+        entity_id: alarm_control_panel.home_alarm
+        code: !secret alarmcode
+  #disarm at morning
+  - alias: 'Disarm alarm in the morning'
+    trigger:
+      platform: time
+      at: "07:00:00"
+    condition:
+      condition: state
+      entity_id: group.all_devices
+      state: home
+    action:
+      service: alarm_control_panel.alarm_disarm
+      data:
+        entity_id: alarm_control_panel.home_alarm
+        code: !secret alarmcode
+  #motion test
+  - alias: "bedroom alarm"
+    trigger:
+      - platform: state
+        entity_id: light.ceiling_light
+        from: 'off'
+        to: 'on'
+    condition:
+      condition: and
+      conditions:
+        - condition: state
+          entity_id: alarm_control_panel.home_alarm
+          state: 'armed_away'
+    action:
+      - service: script.alarm_light
+      - service: notify.ios_thaless_iphone_7
+        data:
+          title: "Alert!"
+          message: "Motion detected in Bedroom"
+  #alarm home
+  - alias: 'Send notification when alarm tunned on Home'
+    trigger:
+      - platform: state
+        entity_id: alarm_control_panel.home_alarm
+        to: 'armed_home'
+    action:
+      - service: notify.ios_thaless_iphone_7
+        data:
+          message: "The house alarm has been switched on in home mode. Goodnight"
+          data:
+            attachment:
+              content-type: jpeg
+            push:
+              category: camera
+            entity_id: camera.frontdoor_camera
+      - service: notify.html5
+        data_template:
+          message: "The house alarm has been switched on in home mode. Goodnight."
+        data:
+          data:
+            tag: 'notification-about-alarm'
+            image: !secret html5cameraimage
+            url: !secret html5cameraurl
+      - service: media_player.volume_set
+        data:
+          entity_id: media_player.bedroom_wall
+          volume_level: 1.00
+      - service: tts.google_say
+        entity_id: media_player.bedroom_wall
+        data:
+          message: 'The house alarm has been switched on in home mode. Goodnight'
+      - service: script.turn_on
+        data:
+          entity_id: script.light_notify
+  #alarm away
+  - alias: 'Send notification when alarm tunned on Away'
+    trigger:
+      - platform: state
+        entity_id: alarm_control_panel.home_alarm
+        to: 'armed_away'
+    action:
+      - service: notify.ios_thaless_iphone_7
+        data:
+          message: "The house alarm has been switched on in away mode. Goodbye"
+          data:
+            data:
+            attachment:
+              content-type: jpeg
+            push:
+              category: camera
+            entity_id: camera.frontdoor_camera
+      - service: tts.google_say
+        entity_id: media_player.bedroom_wall
+        data:
+          message: 'The house alarm has been switched on in away mode. Goodbye'
+  #alarm off
+  - alias: 'Send notification when alarm tunned off'
+    trigger:
+      - platform: state
+        entity_id: alarm_control_panel.home_alarm
+        to: 'disarmed'
+    action:
+      - service: notify.ios_thaless_iphone_7
+        data:
+          message: "The house alarm has been Deactivated"
+          data:
+            push:
+              badge: 0
+      - service: tts.google_say
+        entity_id: media_player.bedroom_wall
+        data:
+          message: 'The house alarm has been Deactivated'
+      - service: script.turn_on
+        data:
+          entity_id: script.alarm_off
+  #arming alarm notification
+  - alias: 'Alarm Away Mode Arming'
+    trigger:
+      - platform: state
+        entity_id: alarm_control_panel.home_alarm
+        to: 'pending'
+    action:
+      - service: notify.ios_thaless_iphone_7
+        data:
+          message: "House alarm activating, ensure all doors and windows are closed"
+      - service: tts.google_say
+        entity_id: media_player.bedroom_wall
+        data:
+          message: 'House alarm activating, ensure all doors and windows are closed'
+  #timelaps
+  - alias: Dayli timelapse
+    trigger:
+      platform: time
+      at: '21:00:00'
+    action:
+      - service: notify.ios_thaless_iphone_7
+        data:
+          message: 'Daily timelapse reminder!'
+  #test game notification
+  - alias: Notification when someone start GTA V
+    trigger:
+      platform: template
+      value_template: "{{ is_state_attr('sensor.steam_76561198261582146', 'game', 'Grand Theft Auto V') }}"
+    action:
+      - service: notify.ios_thaless_iphone_7
+        data:
+          message: 'Thalles is playing GTA V'
+  #turn morning summary on at 6
+  - alias: Turn Morning summary boolean on at 6am mon-fri
+    trigger:
+      platform: time
+      at: '06:00:00'
+    condition:
+        condition: state
+        entity_id: device_tracker.thaless_iphone_7
+        state: 'home'
+    action:
+      service: homeassistant.turn_on
+      entity_id: input_boolean.good_morning_summary
+    #morning summary
+  - alias: Speak the weather and morning commute time
+    trigger:
+      - platform: state
+        entity_id: light.ceiling_light
+        from: 'off'
+        to: 'on'
+    condition:
+      condition: and
+      conditions:
+        - condition: state
+          entity_id: device_tracker.thaless_iphone_7
+          state: 'home'
+        - condition: state
+          entity_id: input_boolean.good_morning_summary
+          state: 'on'
+    action:
+     # - service: notify.wall_tablet
+      #  data_template:
+       #   message: >
+        #    Good morning, Thalles. The time is now(). It is currently {{states('sensor.dark_sky_temperature')}} degrees outside. Today's weather is {{states('sensor.dark_sky_summary')}}. There will be a high of {{states('sensor.dark_sky_daily_high_temperature')}} and a low of {{states('sensor.dark_sky_daily_low_temperature')}}. If you left now, it would take approximately {{states('sensor.home_to_school')}} minutes to get to school.
+      - service: tts.google_say
+        entity_id: media_player.bedroom_wall
+        data_template:
+          message: >
+            Good morning, Thalles. The time is {{states('sensor.time')}}. It is currently {{states('sensor.dark_sky_temperature')}} degrees outside. Today's weather is {{states('sensor.dark_sky_summary')}}. There will be a high of {{states('sensor.dark_sky_daily_high_temperature')}} and a low of {{states('sensor.dark_sky_daily_low_temperature')}}. If you left now, it would take approximately {{states('sensor.home_to_school')}} minutes to get to school.
+      - service: homeassistant.turn_off
+        entity_id: input_boolean.good_morning_summary
+  #Turn xmas tree on and off
+  - alias: xmas tree on
+    hide_entity: false
+    trigger:
+      - platform: sun
+        event: sunrise
+      - platform: sun
+        event: sunset
+        offset: "-00:15:00"
+    condition:
+      condition: template
+      value_template: '{{ now().month == 12 }}'
+    action:
+      - service: script.xmas_on
+      - service: notify.ios_thaless_iphone_7
+        data:
+          message: 'Christmas Tree lights are turned on.'
+  #turn off
+  - alias: xmas tree off
+    hide_entity: false
+    trigger:
+      - platform: time
+        at: '09:00:00'
+      - platform: time
+        at: '23:30:00'
+    condition:
+      condition: template
+      value_template: '{{ now().month == 12 }}'
+    action:
+      - service: script.xmas_off
+      - service: notify.ios_thaless_iphone_7
+        data:
+          message: 'Christmas Tree lights are turned off.'
+  #Rain Alert
+  - alias: 'Rain Radar Alert'
+    initial_state: 'on'
+    trigger:
+      platform: numeric_state
+      entity_id: sensor.dark_sky_nearest_storm_distance
+      below: 6
+    condition:
+      condition: or
+      conditions:
+        - condition: state
+          entity_id: 'device_tracker.thaless_iphone_7'
+          state: 'not_home'
+    action:
+      - service: script.turn_on
+        data:
+          entity_id: script.rain_radar_push
+  #notification when my pc turn off 
+  - alias: Pc notifications off
+    trigger:
+      - platform: state
+        entity_id: switch.thalles_pc
+        from: 'on'
+        to: 'off'
+    action:
+      - service: script.turn_on
+        data:
+          entity_id: script.pc_off_push
+  #notification when my pc turn on
+  - alias: Pc notifications on
+    trigger:
+      - platform: state
+        entity_id: switch.thalles_pc
+        from: 'off'
+        to: 'on'
+    action:
+      - service: script.turn_on
+        data:
+          entity_id: script.pc_on_push
+  #notification about new hass version
+  - alias: Update notifications
+    trigger:
+      - platform: state
+        entity_id: updater.updater
+    action:
+      service: notify.ios_thaless_iphone_7
+      data:
+        message: "Home Assistant {{ states('updater.updater') }} is available."
+  #restart notify
+  - alias: Notify of Home Assistant restart
+    trigger:
+      - platform: homeassistant
+        event: start
+    action:
+      - service: notify.ios_thaless_iphone_7
+        data:
+          message: "Home Assistant has restarted"
+      - service: notify.html5
+        data_template:
+          message: "Home Assistant has restarted"
+        data:
+          data:
+            tag: 'notification-about-restart'
+  #clear tts clache
+  - alias: Flush TTS Cache
+    trigger:
+      platform: time
+      at: '2:35:00'
+    action:
+      - service: tts.clear_cache
+      - service: notify.ios_thaless_iphone_7
+        data:
+          message: "TTS cache cleared."
+  #dark theme at night
+  - alias: 'Set dark theme for the night'
+    initial_state: True
+    trigger:
+      - platform: sun
+        event: sunset
+    condition:
+      condition: state
+      entity_id: input_boolean.dark_theme_status
+      state: 'on'
+    action:
+      - service: frontend.set_theme
+        data:
+          name: midnight
+  #normal theme at day
+  - alias: 'Set normal theme for day'
+    initial_state: True
+    trigger:
+      - platform: sun
+        event: sunrise
+    condition:
+      condition: state
+      entity_id: input_boolean.dark_theme_status
+      state: 'on'
+    action:
+      - service: frontend.set_theme
+        data:
+          name: mydefault
+  #set theme
+  - alias: 'Set theme at startup'
+    initial_state: 'on'
+    trigger:
+     - platform: homeassistant
+       event: start
+    action:
+      service: frontend.set_theme
+      data:
+        name: mydefault
+
+  - alias: "Turn on lights on sunset"
+    initial_state: True
+    trigger:
+       platform: sun
+       event: sunset
+       offset: "-00:10:00"
+    condition:
+      condition: state
+      entity_id: group.all_devices
+      state: home
+    action:
+      service: light.turn_on
+      entity_id: light.ceiling_light
+      data:
+        brightness: 140
+        transition: 300
+  - alias: 'Send notification when sun rises and turn lights off'
+    initial_state: True
+    trigger:
+      platform: sun
+      event: sunrise
+      offset: '+00:00:00'
+    action:
+      - service: script.goodmorning_informations
+
+      - service: notify.ios_thaless_iphone_7
+        data:
+          message: 'All lights are turned off.'
+          title: 'The sun is up.'
+
+      - service: light.turn_off
+        entity_id: group.all_lights
+
+  - alias: 'Send notification when sun sets'
+    initial_state: True
+    trigger:
+      platform: sun
+      event: sunset
+      offset: '+00:00:00'
+    action:
+      service: notify.ios_thaless_iphone_7
+      data:
+        message: 'The sun is down.'
+        data:
+          push:
+            sound: "US-EN-Alexa-Good-Night.wav"
+
+  - alias: 'send notification when Thalles is on home'
+    initial_state: True
+    trigger:
+      platform: state
+      entity_id: device_tracker.thaless_iphone_7
+      from: 'not_home'
+      to: 'home'
+    action:
+      - service: notify.ios_thaless_iphone_7
+        data:
+          message: 'Dear Thalles, welcome home'
+          title: "Home Assistant"
+          data:
+            push:
+              sound: "US-EN-Alexa-Welcome-Home.wav"
+
+  - alias: 'light on gradually with alarm'
+    initial_state: True
+    hide_entity: False
+    trigger:
+      platform: template
+      value_template: '{{ states.sensor.time.state == states.sensor.alarm_clock_time_long.state }}'
+    condition:
+      condition: and
+      conditions:
+        - condition: time
+          weekday:
+            - mon
+            - tue
+            - wed
+            - thu
+            - fri
+        - condition: state
+          entity_id: input_boolean.alarm_clock_status
+          state: 'on'
+    action:
+      - service: script.wake_up
+
+      - service: notify.ios_thaless_iphone_7
+        data:
+          message: 'Time to Wake Up!'
+          title: "Good morning Thalles."
+          data:
+            push:
+              sound: "goodmorningalarm.wav"
