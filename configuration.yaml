@@ -67,7 +67,6 @@ frontend: !include frontend.yaml
 config:
 http:
   api_password: !secret http_password
-# api_password: ediaccess
   base_url: !secret baseurl
   ssl_certificate: /ssl/fullchain.pem
   ssl_key: /ssl/privkey.pem
