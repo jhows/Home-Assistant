@@ -84,6 +84,7 @@
   Residence Radio:
     name: Residentie Radio
     entities:
+      - sensor.kodistatus
       - input_select.radio_station
       - input_select.chromecast_radio
       - script.radio538
@@ -181,11 +182,11 @@
     entities:
       - light.ceiling_light
       - light.bedside_lamp
-      - light.pc_led_strip
       - fan.ceiling_fan
       - switch.imac
       - switch.thalles_pc
       - input_select.pcoptions
+      - light.desk_led_strip
       - input_boolean.study_time
       - input_boolean.good_morning_summary
       - sensor.ip_webcam_motion
