@@ -1,4 +1,48 @@
-
+  ## Vacation mode lights
+  # Turns lights on and off after sunset
+  vacation_lights:
+    sequence:
+    # wait an hour after sunset
+      - delay:
+          hours: 1
+      # turn lights on for 2 hours after sunset
+      - service: script.all_lights_on
+      - service: notify.ios_thaless_iphone_7
+        data:
+          message: 'The sun is down, all lights are turned on for 2 hours because you are on vacation.'
+          title: "Home Assistant"
+      - delay:
+          hours: 2
+      # turn lights off and wait 1 hours
+      - service: script.all_lights_off
+      - delay:
+          hours: 1    
+      # turn lights on for 30 more minutes
+      - service: script.all_lights_on
+      - service: notify.ios_thaless_iphone_7
+        data:
+          message: 'All lights are turned on again for 30 minutes, because you are on vacation.'
+          title: "Home Assistant"
+      - delay:
+          minutes: 30
+      # turn lights off
+      - service: script.all_lights_off
+      - service: notify.ios_thaless_iphone_7
+        data:
+          message: 'All lights are turned off. Good night!'
+          title: "Home Assistant"
+  all_lights_on:
+    alias: 'All on'
+    sequence:
+      - service: light.turn_on
+        data:
+          entity_id: light.ceiling_light
+  all_lights_off:
+    alias: 'All off'
+    sequence:
+      - service: light.turn_off
+        data:
+          entity_id: light.ceiling_light
   drink_water_hourly:
     alias: 'drink water hourly'
     sequence:
