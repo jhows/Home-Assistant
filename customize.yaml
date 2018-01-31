@@ -1,3 +1,12 @@
+sensor.day_night:
+  templates:
+    rgb_color: "if (state === 'Day') return [253, 216, 53];"
+sensor.external_ip:
+  friendly_name: External IP
+  icon: mdi:earth
+script.steam:
+  friendly_name: Steam Launcher
+  icon: mdi:steam
 script.radio538:
   friendly_name: Start Playing
   icon: mdi:play
@@ -22,7 +31,7 @@ binary_sensor.alarm:
     triggered_colour: red
 zone.home:
   track_ios: true
-zone.school:
+zone.college:
   track_ios: true
 switch.thalles_pc:
   custom_ui_state_card: state-card-custom-ui
@@ -30,16 +39,26 @@ switch.thalles_pc:
   confirm_controls_show_lock: true
   friendly_name: Gaming PC
   icon: mdi:monitor
+  homebridge_visible: true
 light.ceiling_light_l:
   friendly_name: Ceiling Light
   icon: mdi:ceiling-light
 fan.ceiling_fan_l:
   friendly_name: Ceiling Fan
+fan.ceiling_fan:
+  friendly_name: Ceiling Fan
+  homebridge_visible: true
 light.bedside_lamp:
   icon: mdi:lamp
-light.pc_led_strip:
-  icon: mdi:led-off
+  homebridge_visible: true
+light.desk_led_strip:
+  friendly_name: LED Strip Desk
+  custom_ui_state_card: state-card-custom-ui
+  icon: mdi:led-strip
+  homebridge_visible: true
 cover.bedroom_blinds:
+  homebridge_visible: true
+  homebridge_cover_type: rollershutter
   friendly_name: Blinds
   custom_ui_state_card: state-card-custom-ui
   state_card_mode: break-slider
@@ -135,6 +154,8 @@ input_boolean.dark_theme_status:
   homebridge_mfg: Hass
   homebridge_model: Nothing
   homebridge_serial: Nothing
+  templates:
+    rgb_color: "if (state === 'on') return [253, 216, 53];"
 group.alarm_clock:
   icon: mdi:alarm
 sensor.time:
@@ -158,12 +179,19 @@ input_number.alarm_clock_minute:
 input_boolean.alarm_clock_status:
   friendly_name: Status
   icon: mdi:alarm-check
-sensor.home_to_school:
-  friendly_name: Home To School (Walking)
-  icon: mdi:walk
+  homebridge_visible: true
+  templates:
+    rgb_color: "if (state === 'on') return [253, 216, 53];"
+sensor.home_to_college:
+  friendly_name: Home To College (Driving)
+  icon: mdi:car
 device_tracker.thaless_iphone_7:
   friendly_name: Thales' iPhone 7
-sensor.pihole_ads_percentage_today:
+switch.pihole_switch:
+  friendly_name: Pi-Hole
+  entity_picture: /local/custom_icons/pihole.png
+  homebridge_visible: true
+sensor.ads_percentage_today:
   friendly_name: Percentage of Ad Traffic Blocked
   unit_of_measurement: '%'
   icon: mdi:ticket-percent
@@ -179,6 +207,12 @@ sensor.pihole_ads_blocked_today:
 sensor.pihole_dns_queries_today:
   friendly_name: DNS Queries Today
   icon: mdi:note-text
+script.pihole_off:
+  friendly_name: Turn Pi-Hole Off
+  icon: mdi:do-not-disturb
+script.pihole_on:
+  friendly_name: Turn Pi-Hole On
+  icon: mdi:power
 sensor.cpu_temp:
   friendly_name: CPU Temperature
   icon: mdi:temperature-celsius
@@ -221,6 +255,7 @@ sensor.ip_webcam_motion:
   friendly_name: Bedroom Motion
 input_boolean.study_time:
   icon: mdi:book-open-variant
+  homebridge_visible: true
 sensor.usd:
   custom_ui_state_card: state-card-custom-ui
   show_last_changed: true
@@ -229,12 +264,52 @@ switch.imac:
   custom_ui_state_card: state-card-custom-ui
   confirm_controls_show_lock: true
   icon: mdi:desktop-mac
+  homebridge_visible: true
 sensor.thaless_iphone_7_battery_level:
   custom_ui_state_card: state-card-custom-ui
   show_last_changed: true
 sensor.thaless_iphone_7_battery_state:
   custom_ui_state_card: state-card-custom-ui
   show_last_changed: true
+  templates:
+    rgb_color: "if (state === 'Charging') return [253, 216, 53];"
+input_boolean.vacation_mode:
+  templates:
+    rgb_color: "if (state === 'on') return [253, 216, 53];"
+input_boolean.friend_visiting:
+  templates:
+    rgb_color: "if (state === 'on') return [253, 216, 53];"
 sensor.moon:
   custom_ui_state_card: state-card-custom-ui
   show_last_changed: true
+sensor.kodistatus:
+  icon: mdi:speaker-wireless
+  templates:
+    rgb_color: "if (state === 'Playing') return [253, 216, 53];"
+camera.thales_cam:
+  friendly_name: Localização Thales
+group.residence_radio:
+  friendly_name: Radio
+camera.praca_7bh:
+  friendly_name: Praça Sete BH
+media_player.kodi: {}
+input_boolean.drink_water:
+  icon: mdi:cup-water
+  templates:
+    rgb_color: "if (state === 'on') return [253, 216, 53];"
+sensor.proximo_valor:
+  friendly_name: Valor Acumulado
+  icon: mdi:currency-usd
+sensor.acumulado:
+  icon: mdi:help
+sensor.sorteio_date:
+  friendly_name: Último Sorteio
+  icon: mdi:calendar-range
+sensor.proxima_data:
+  icon: mdi:calendar-range
+sensor.numeros_sorteados:
+  icon: mdi:numeric
+sensor.sorteio_numero:
+  icon: mdi:ticket-confirmation
+group.default_view:
+  friendly_name: Thalles' Home

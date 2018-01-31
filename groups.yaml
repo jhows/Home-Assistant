@@ -8,6 +8,7 @@
       - media_player.mp_chc
       - camera.ip_webcam
       - group.ip_webcam_settings
+      - group.residence_radio
   livingroom_view:
     view: yes
     name: Living Room
@@ -16,11 +17,14 @@
       - group.livingroom
       - group.weather
       - media_player.mp_chc
+      - group.residence_radio
   cameras_view:
     view: yes
     name: Cameras
     entities:
       - group.camera
+      - camera.praca_7bh
+      - camera.thales_cam
   weather_view:
     view: yes
     name: Weather
@@ -30,31 +34,35 @@
     view: yes
     entities:
       - group.home_status
-      - group.dark_theme
+      - group.bedroom
+      - group.livingroom
       - group.weather
       - group.currency
       - group.alarm_clock
       - group.battery
       - group.residence_radio
-      - group.livingroom
-      - group.bedroom
+      - group.netspeed
+      - group.system
+      - camera.frontdoor_camera
       - camera.outdoor
       - group.transport
       - media_player.mp_chc
       - media_player.thallespc
-      - media_player.kodi
-      - media_player.spotify
       - camera.ip_webcam
       - group.steam
-      - group.netspeed
-      - group.system
-      - camera.frontdoor_camera
       - group.ip_webcam_settings
+      - group.birthday_countdown
+      - group.reminders
+      - group.mega_sena
+      - group.dark_theme
+      - media_player.kodi
+      - media_player.spotify
   automations_view:
     view: yes
     name: Automations
     entities:
-      - group.automations
+      - automation.alarm_away_mode_arming
+      - automation.arm_alarm_at_night
   system_view:
     view: yes
     name: System
@@ -62,6 +70,20 @@
       - group.system
       - group.netspeed
 ####GROUPs
+  mega_sena:
+    name: Mega Sena
+    entities:
+      - sensor.sorteio_date
+      - sensor.proxima_data
+      - sensor.proximo_valor
+      - sensor.numeros_sorteados
+      - sensor.acumulado
+      - sensor.valor_acumulado
+      - sensor.sorteio_numero
+  reminders:
+    name: Reminder 
+    entities: 
+      - input_boolean.drink_water
   ip_webcam_settings:
     name: IP Webcam Settings
     entities:
@@ -94,32 +116,6 @@
     name: Links
     entities:
       - weblink.bedroom_wall_dash
-  automations:
-    name: Automations
-    entities:
-      - automation.light_on_gradually_with_alarm
-      - automation.pc_notifications_off
-      - automation.pc_notifications_on
-      - automation.rain_radar_alert
-      - automation.send_notification_when_sun_rises_and_turn_lights_off 
-      - automation.send_notification_when_sun_sets
-      - automation.send_notification_when_thalles_is_on_home
-      - automation.set_dark_theme_for_the_night
-      - automation.set_normal_theme_for_day
-      - automation.set_theme_at_startup
-      - automation.turn_on_lights_on_sunset
-      - automation.update_notifications
-      - automation.xmas_tree_off
-      - automation.xmas_tree_on 
-      - automation.speak_the_weather_and_morning_commute_time
-      - automation.turn_morning_summary_boolean_on_at_6am_monfri
-      - automation.dayli_timelapse
-      - automation.notification_when_someone_start_gta_v
-      - automation.arm_alarm_at_night
-      - automation.disarm_alarm_in_the_morning
-      - automation.flush_tts_cache
-      - automation.notify_of_home_assistant_restart
-      - script.lighttest
   zones:
     name: Zones
     entities:
@@ -132,7 +128,6 @@
     name: Cameras
     entities:
       - camera.frontdoor_camera
-      - camera.ip_webcam
   system:
     name: System
     entities:
@@ -146,16 +141,20 @@
     name: Home Status
     entities:
       - device_tracker.thaless_iphone_7
+      - input_select.thales_status
+      - device_tracker.taylon_brother
+      - input_boolean.vacation_mode
+      - input_boolean.friend_visiting
       - alarm_control_panel.home_alarm
       - sensor.time
   transport:
     name: Travel Time
     entities:
-      - sensor.home_to_school
+      - sensor.home_to_college
   weather:
     name: Weather
     entities: 
-      - sun.sun
+      - sensor.day_night
       - sensor.dark_sky_summary
       - sensor.dark_sky_apparent_temperature
       - sensor.dark_sky_temperature
@@ -164,7 +163,7 @@
       - sensor.dark_sky_humidity
       - sensor.dark_sky_precip_probability
       - sensor.dark_sky_precip_intensity
-      - sensor.moon
+      - sensor.moon_phases
   battery: 
     name: Battery
     entities: 
@@ -205,7 +204,8 @@
   netspeed:
     name: Network
     entities: 
-      - switch.pihole_temp_disable
+      - switch.pihole_switch
+      - sensor.external_ip
       - sensor.speedtest_download
       - sensor.speedtest_upload
       - sensor.speedtest_ping

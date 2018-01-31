@@ -1,3 +1,169 @@
+  #notify when internet comes down
+  - alias: 'Notify internet offline'
+    trigger:
+      - platform: state
+        entity_id: sensor.external_ip
+        to: unavailable
+    action: 
+      - service: notify.thaless_iphone_7
+        data:
+          message: "Internet connection offline. Now we are offline :("
+  #notify when internet comes back
+  - alias: 'Notify internet comes back'
+    trigger:
+      - platform: state
+        entity_id: sensor.external_ip
+        from: unavailable
+    action: 
+      - service: notify.thaless_iphone_7
+        data:
+          message: "Internet connection are back. Now we are online :D"
+  # Turn vacation mode on automatically
+  - alias: 'thales vacation mode on when gone 24 hours'
+    trigger:
+      - platform: state
+        entity_id: device_tracker.thaless_iphone_7
+        from: 'home'
+        to: 'not_home'
+        for:
+          hours: 24
+          minutes: 0
+          seconds: 0
+    action:
+      - service: homeassistant.turn_on
+        entity_id: input_boolean.vacation_mode
+
+  # Turn vacation mode off automatically
+  - alias: 'thales vacation mode off when home'
+    trigger:
+      - platform: state
+        entity_id: device_tracker.thaless_iphone_7 
+        from: 'not_home'
+        to: 'home'
+    action:
+      - service: homeassistant.turn_off
+        entity_id: input_boolean.vacation_mode
+
+  # Turn on lights when vacation mode active
+  - alias: 'stat-vac_Vacation lights at sunset when vacation mode on'
+    trigger:
+      - platform: state
+        entity_id: sun.sun
+        from: 'above_horizon'
+        to: 'below_horizon'
+    condition:
+      - condition: state
+        entity_id: input_boolean.vacation_mode
+        state: 'on'
+    action:
+      - service: script.vacation_lights
+  # Home status
+  - alias: "not home status from device tracker"
+    trigger:
+      - platform: state
+        entity_id: device_tracker.thaless_iphone_7
+        from: 'not_home'
+        to: "home"
+        for:
+          minutes: 3
+    action:
+      - service: input_select.select_option
+        data:
+          entity_id: input_select.thales_status
+          option: "At Home"
+
+  # Away status
+  - alias: "Set away status from device tracker"
+    trigger:
+      - platform: state
+        entity_id: device_tracker.thaless_iphone_7
+        from: 'home'
+        to: "not_home"
+        for:
+          minutes: 10
+    action:
+      - service: input_select.select_option
+        data:
+          entity_id: input_select.thales_status
+          option: "Away"
+
+  - alias: "Media player paused/stopped"
+    trigger:
+      - platform: state
+        entity_id: media_player.kodi
+        from: 'playing'
+        to: 'idle'
+    condition:
+      - condition: state
+        entity_id: sun.sun
+        state: 'below_horizon'
+    action:
+        service: scene.turn_on
+        entity_id: scene.livingroom_normal
+  #light on media player start/stop
+  - alias: "Media player playing"
+    trigger:
+      - platform: state
+        entity_id: media_player.kodi
+        to: 'playing'
+        from: 'idle'
+    condition:
+      - condition: state
+        entity_id: sun.sun
+        state: 'below_horizon'
+    action:
+        service: scene.turn_on
+        entity_id: scene.livingroom_dim
+  - alias: Notify Of New External IP
+    initial_state: 'on'
+    trigger:
+      platform: state
+      entity_id: sensor.external_ip
+    condition:
+      - condition: template
+        value_template: "{% if trigger.from_state and trigger.to_state %} True {% else %} False {% endif %}"
+    action:
+      - service: notify.ios_thaless_iphone_7
+        data:
+          message: "Your External IP changed from {{ trigger.from_state.state }} to {{ trigger.to_state.state }}"
+  - alias: 'drink water reminder hourly'
+    trigger:
+      - platform: time
+        at: '07:00:00'
+      - platform: time
+        at: '08:00:00'
+      - platform: time
+        at: '09:00:00'
+      - platform: time
+        at: '10:00:00'
+      - platform: time
+        at: '11:00:00'
+      - platform: time
+        at: '13:00:00'
+      - platform: time
+        at: '14:00:00'
+      - platform: time
+        at: '15:00:00'
+      - platform: time
+        at: '16:00:00'
+      - platform: time
+        at: '17:00:00'
+      - platform: time
+        at: '18:00:00'
+      - platform: time
+        at: '19:00:00'
+      - platform: time
+        at: '20:00:00'
+      - platform: time
+        at: '22:00:00'
+    condition:
+      condition: and
+      conditions:
+        - condition: state
+          entity_id: input_boolean.drink_water
+          state: 'on'
+    action:
+      - service: script.drink_water_hourly
   - alias: 'pc restart'
     trigger:
       platform: state
@@ -396,6 +562,9 @@
         data:
           data:
             tag: 'notification-about-restart'
+      - delay: 00:01:00
+      - service: homeassistant.turn_on
+        entity_id: input_boolean.drink_water_now
   #clear tts clache
   - alias: Flush TTS Cache
     trigger:
@@ -460,7 +629,7 @@
       entity_id: light.ceiling_light
       data:
         brightness: 140
-        transition: 300
+        transition: 10
   - alias: 'Send notification when sun rises and turn lights off'
     initial_state: True
     trigger:
@@ -507,6 +676,18 @@
           data:
             push:
               sound: "US-EN-Alexa-Welcome-Home.wav"
+  - alias: 'send notification when Thalles left home'
+    initial_state: True
+    trigger:
+      platform: state
+      entity_id: device_tracker.thaless_iphone_7
+      from: 'home'
+      to: 'not_home'
+    action:
+      - service: notify.ios_thaless_iphone_7
+        data:
+          message: 'Bye, have a great time!'
+          title: "Home Assistant"
 
   - alias: 'light on gradually with alarm'
     initial_state: True

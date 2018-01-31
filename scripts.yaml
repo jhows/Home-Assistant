@@ -1,3 +1,24 @@
+
+  drink_water_hourly:
+    alias: 'drink water hourly'
+    sequence:
+      - service: notify.ios_thaless_iphone_7
+        data:
+          message: 'Drink water reminder!'
+          title: "Home Assistant"
+      - service: notify.html5
+        data_template:
+          message: "Drink water reminder!"
+      - service: tts.google_say
+        entity_id: media_player.kodi
+        data_template:
+          message: >
+            {{ [
+            "Thousands Have Lived Without Love, Not One Without Water. Drink water!", 
+            "No Water. No Life. No Blue. No Green. Drink water!", 
+            "Water is Your Best Friend for Life. Drink water!", 
+            "Drink water!"
+            ] | random }}
   light_notify:
     alias: 'Notification in lights'
     sequence:
@@ -49,10 +70,6 @@
         data_template:
           entity_id: media_player.mpd
       - service: light.turn_off
-        data:
-          entity_id: group.all_lights
-      - delay: 0:0:2
-      - service: light.turn_on
         data:
           entity_id: group.all_lights
   #recorder on

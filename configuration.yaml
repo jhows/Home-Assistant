@@ -9,6 +9,7 @@ homeassistant:
   time_zone: America/Sao_Paulo
   # Customization file
   customize: !include customize.yaml
+  packages: !include_dir_named packages
   customize_glob:
     light.*:
       custom_ui_state_card: custom-ui
@@ -48,9 +49,9 @@ homeassistant:
       custom_ui_state_card: custom-ui
 #Zones
 zone:
-  - name: School
-    latitude: !secret schoollat
-    longitude: !secret schoollong
+  - name: College
+    latitude: !secret collegelat
+    longitude: !secret collegelong
     radius: 50
     icon: mdi:school
     track_ios: true
@@ -63,6 +64,7 @@ zone:
     track_ios: true
 # Enables the frontend
 frontend: !include frontend.yaml
+scene: !include scene.yaml
 # Enables configuration UI
 config:
 http:
@@ -77,6 +79,14 @@ updater:
 
 discovery:
 
+device_tracker:
+  - platform: nmap_tracker
+    hosts:
+      - 192.168.1.4
+      - 192.168.1.11
+    home_interval: 10
+    exclude:
+      - 192.168.1.2
 # Allows you to issue voice commands from the frontend in enabled browsers
 conversation:
 
@@ -90,6 +100,20 @@ zeroconf:
 
 ios:
 
+recorder:
+  purge_interval: 2
+  purge_keep_days: 5
+  exclude:
+    domains:
+      - automation
+      - updater
+    entities:
+      - sun.sun # Don't record sun data
+      - sensor.alarm_clock_hour
+      - sensor.alarm_clock_minute
+      - sensor.alarm_clock_time
+      - sensor.alarm_clock_time_long
+      - sensor.steam_76561198317256910
 camera:
   - platform: mjpeg
     name: Frontdoor Camera
@@ -101,6 +125,9 @@ camera:
     platform: generic
     still_image_url: https://maps.googleapis.com/maps/api/staticmap?center={{ states.device_tracker.thaless_iphone_7.attributes.latitude }},{{ states.device_tracker.thaless_iphone_7.attributes.longitude }}&zoom=16&size=500x500&maptype=roadmap&markers=color:green%7Clabel:JA%7C{{ states.device_tracker.thaless_iphone_7.attributes.latitude }},{{ states.device_tracker.thaless_iphone_7.attributes.longitude }}
     limit_refetch_to_url_change: true
+  - name: praca_7bh
+    platform: generic
+    still_image_url: http://infotrafego.pbh.gov.br/rlt/images/camara06.jpg?
 
 #alarm_control_panel:
  # - platform: manual
@@ -119,7 +146,7 @@ notify:
     name: ios
     target: !secret iostarget
 
-  - name: Wall Tablet Bedroom
+  - name: Janet
     platform: pushbullet
     api_key: !secret pushbullet_api
 
@@ -187,24 +214,28 @@ media_player:
 # Weather prediction
 input_number:
   alarm_clock_hour:
-    initial: 8
     min: 0
     max: 23
     step: 1
   alarm_clock_minute:
-    initial: 30
     min: 0
     max: 55
     step: 5
   volume_radio:
     name: Volume
     icon: mdi:volume-high
-    initial: 0.4
     min: 0
     max: 1
     step: 0.01
 
 input_select:
+  thales_status:
+    name: Thales Status
+    options:
+     - "Sleeping"
+     - "At Home"
+     - "Away"
+    initial: "At Home"
   pcoptions:
     name: PC Power Options
     options:
@@ -248,12 +279,23 @@ input_select:
     icon: mdi:speaker-wireless
 
 input_boolean:
+  vacation_mode:
+    name: "On Vacation"
+    initial: off
+    icon: mdi:airplane
+
+  friend_visiting:
+    name: "Friend Visiting"
+    initial: off
+    icon: mdi:wallet-travel
+
+  drink_water:
+    name: "Drink water Reminder"
   study_time:
     name: Study Time
     initial: off
 
   alarm_clock_status:
-    initial: on
 
   dark_theme_status:
     initial: on
@@ -338,10 +380,11 @@ light:
 switch:
   - platform: command_line
     switches:
-      pihole_temp_disable:
+      pihole_switch:
         command_on: !secret piholecmdon
         command_off: !secret piholecmdoff
-
+        command_state: !secret piholestatus
+        value_template: "{{ value_json.status == 'enabled' }}"
   - platform: wake_on_lan
     name: "Thalles' PC"
     mac_address: !secret thalespcmac
@@ -365,6 +408,13 @@ shell_command:
 
 # Weather Prediction
 sensor:
+  - platform: rest
+    resource: https://api.ipify.org/?format=json
+    #resource: http://ip.jsontest.com
+    name: external_ip
+    value_template: '{{ value_json.ip }}'
+    scan_interval: 14400
+    
   - platform: currencylayer
     api_key: !secret currencylayerapi
     base: USD
@@ -377,14 +427,14 @@ sensor:
     unit_of_measurement: "ºC"
     value_template: '{{ value | multiply(0.001) | round(2) }}'
 
- # - platform: pi_hole
-  #  host: 192.168.1.2
-   # ssl: true
-   # monitored_conditions:
-    #  - ads_blocked_today
-     # - ads_percentage_today
-     # - dns_queries_today
-     # - unique_clients
+  - platform: pi_hole
+    host: 192.168.1.2
+    ssl: false
+    monitored_conditions:
+      - ads_blocked_today
+      - ads_percentage_today
+      - dns_queries_today
+      - unique_clients
   
   - platform: systemmonitor
     resources:
@@ -416,11 +466,11 @@ sensor:
   - platform: google_travel_time
     api_key: !secret traveltime
     origin: zone.home
-    destination: zone.school
-    name: Home to School
+    destination: zone.college
+    name: Home to College
     options:
-      arrival_time: '07:00:00'
-      mode: walking
+      arrival_time: '19:00:00'
+      mode: driving
 
   - platform: darksky
     api_key: !secret darksky_api
@@ -442,7 +492,7 @@ sensor:
     units: si
  
   - platform: speedtest
-    server_id: 5846 
+    server_id: 10898 
     minute:
       - 1
       - 0
@@ -454,9 +504,94 @@ sensor:
   - platform: time_date
     display_options:
       - 'time'
- 
+  - platform: rest
+    resource: https://www.lotodicas.com.br/api/mega-sena
+    name: Mega Sena
+    value_template: '{{ value_json.sorteio }}'
+    json_attributes:
+      - numero
+      - data
+      - sorteio
+      - acumulado
+      - valor_acumulado
+      - proximo_estimativa
+      - proximo_data
+
   - platform: template
     sensors:
+      day_night:
+        friendly_name: "Day/Night"
+        value_template: >-
+          {% if is_state('sun.sun', 'above_horizon') %}
+            Day
+          {% else %}
+            Night
+          {% endif %}
+        icon_template: >-
+          {% if is_state('sun.sun', 'above_horizon') %}
+            mdi:white-balance-sunny
+          {% else %}
+            mdi:weather-night
+          {% endif %}
+
+      moon_phases:
+        friendly_name: "Moon"
+        value_template: >-
+          {% if is_state('sensor.moon', 'New moon') %}
+            New Moon
+          {% elif is_state('sensor.moon', 'Waxing crescent') %}
+            Waxing crescent
+          {% elif is_state('sensor.moon', 'First quarter') %}
+            First quarter
+          {% elif is_state('sensor.moon', 'Waxing gibbous') %}
+            Waxing gibbous
+          {% elif is_state('sensor.moon', 'Full moon') %}
+            Full moon
+          {% elif is_state('sensor.moon', 'Waning gibbous') %}
+            Waning gibbous
+          {% elif is_state('sensor.moon', 'Last quarter') %}
+            Last quarter
+          {% elif is_state('sensor.moon', 'Waning crescent') %}
+            Waning crescent
+          {% endif %}
+        icon_template: >-
+          {% if is_state('sensor.moon', 'New moon') %}
+            mdi:brightness-3
+          {% elif is_state('sensor.moon', 'Waxing crescent') %}
+            mdi:brightness-3
+          {% elif is_state('sensor.moon', 'First quarter') %}
+            mdi:brightness-2
+          {% elif is_state('sensor.moon', 'Waxing gibbous') %}
+            mdi:brightness-2
+          {% elif is_state('sensor.moon', 'Full moon') %}
+            mdi:brightness-1
+          {% elif is_state('sensor.moon', 'Waning gibbous') %}
+            mdi:brightness-2
+          {% elif is_state('sensor.moon', 'Last quarter') %}
+            mdi:brightness-2
+          {% elif is_state('sensor.moon', 'Waning crescent') %}
+            mdi:brightness-1
+          {% endif %}
+      sorteio_numero:
+        friendly_name: 'Sorteio'
+        value_template: '{{ states.sensor.mega_sena.attributes["numero"] }}'
+      sorteio_date:
+        friendly_name: 'Último Sorteio'
+        value_template: '{{ states.sensor.mega_sena.attributes["data"] }}'
+      numeros_sorteados:
+        friendly_name: 'Números'
+        value_template: '{{ states.sensor.mega_sena.attributes["sorteio"] }}'
+      acumulado:
+        friendly_name: 'Acumulou?'
+        value_template: '{{ states.sensor.mega_sena.attributes["acumulado"] }}'
+      proximo_valor:
+        friendly_name: 'Valor Próximo'
+        value_template: '{{ states.sensor.mega_sena.attributes["proximo_estimativa"] }}'
+        unit_of_measurement: "R$"
+      proxima_data:
+        friendly_name: 'Próximo Sorteio'
+        value_template: '{{ states.sensor.mega_sena.attributes["proximo_data"] }}'
+
       kodistatus:  
         friendly_name: 'Device Status'
         value_template: >    
@@ -464,6 +599,8 @@ sensor:
          Off
          {%- elif is_state('media_player.kodi', 'idle') -%}
          On   
+         {%- else -%}
+         Playing
          {%- endif -%}
       alarm_clock_hour:
         value_template: '{{ states.input_number.alarm_clock_hour.state | int }}'
@@ -493,6 +630,10 @@ tts:
   - platform: google
     language: 'en'
 
+  - platform: microsoft
+    api_key: !secret ttsmicrosoft
+    language: pt-br
+    type: HeloisaRUS
 alarm_control_panel: !include alarm.yaml
 panel_custom: !include panel_custom.yaml
 
