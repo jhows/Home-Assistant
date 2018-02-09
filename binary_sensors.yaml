@@ -1,9 +1,0 @@
-  - platform: mqtt
-    state_topic: dummy/alarm/sensor
-    name: Alarm
-  - platform: iss
-    show_on_map: False
-  #detect when internet comes down
-  - platform: ping
-    host: 200.160.2.3
-    scan_interval: 30
