@@ -1,0 +1,33 @@
+sensor:
+  - platform: rest
+    resource: https://devsberry.com/rastreamento.php?rastreio=PP365505902BR
+    name: Rastreamento Correios
+    value_template: '{{ value_json.data }}'
+    scan_interval: 14400
+    json_attributes:
+      - cidade
+      - data
+      - descricao
+      - hora
+      - local
+      - numero
+  - platform: template
+    sensors:
+      rastreio_cidade:
+        friendly_name: Cidade
+        value_template: '{{ states.sensor.rastreamento_correios.attributes["cidade"] }}'
+      rastreio_data:
+        friendly_name: Data 
+        value_template: '{{ states.sensor.rastreamento_correios.attributes["data"] }}'
+      rastreio_destino:
+        friendly_name: descricao
+        value_template: '{{ states.sensor.rastreamento_correios.attributes["descricao"] }}'
+      rastreio_hora:
+        friendly_name: Hora
+        value_template: '{{ states.sensor.rastreamento_correios.attributes["hora"] }}'
+      rastreio_local:
+        friendly_name: Encaminhado para
+        value_template: '{{ states.sensor.rastreamento_correios.attributes["local"] }}'
+      rastreio_numero:
+        friendly_name: Echo Dot
+        value_template: '{{ states.sensor.rastreamento_correios.attributes["numero"] }}'

@@ -1,0 +1,351 @@
+#-------------------------------------------
+#  This is the configuration account for @BearStoneHA - My Home's automated twitter account.
+# @CCOSTAN
+# Original Repo : https://github.com/CCOSTAN/Home-AssistantConfig
+#-------------------------------------------
+
+#Credits to @CCOSTAN
+######################## SENSOR ###########################################
+sensor:
+  - platform: rest
+    resource: https://raw.githubusercontent.com/SouzaaThales/Home-Assistant/master/holidays.json
+    name: Holiday
+    scan_interval: 14400
+    value_template: >
+      {% set today = now().month  ~ '/' ~ now().day  %}
+      {% set holiday =  value_json.MAJOR_US.static[ today ] %}
+      {% if holiday | trim == "" %}
+        {% set today = now().month  ~ '/' ~ now().day ~ '/' ~ now().year %}
+        {% set holiday =  value_json.MAJOR_US.dynamic[ today ] %}
+      {% endif %}
+      {{ holiday }}
+
+  - platform: rest
+    resource: http://www.webcal.fi/cal.php?id=335&format=json&start_year=current_year&end_year=2017&tz=America%2FNew_York
+    name: Flag
+    scan_interval: 14400
+    value_template: >-
+      {% set is_flag_day = False %}
+      {%- for day_val in value_json -%}
+        {% set now_string = now().strftime('%Y-%m-%d') %}
+        {%- if day_val.date == now_string and day_val.flag_day == 1-%}
+          {% set is_flag_day = True %}
+        {%- endif -%}
+      {% endfor %}
+      {{is_flag_day}}
+
+  - platform: rest
+    scan_interval: 3600
+    resource: https://launchlibrary.net/1.2.2/launch/next/10
+    # resource: https://raw.githubusercontent.com/cribbstechnologies/ha_config/master/www/test_launch.json
+    name: launch window
+    # if the current timestamp is in the launch window
+    # this sensor will return the UTC timestamp of the launch
+    value_template: >-
+      {%- for launch in value_json.launches %}
+        {% if launch.location.id == 16 or launch.location.id == 17 %}
+          {% if strptime(launch.isostart, '%Y%m%dT%H%M%SZ').strftime('%Y-%m-%d') == now().strftime('%Y-%m-%d') %}
+            {% set utc_offset_string = now().strftime('%z') %}
+            {% set utc_offset_direction = utc_offset_string[:1] %}
+            {% set utc_offset_hours = now().strftime('%z')[-4:] %}
+            {% set utc_offset_seconds = (utc_offset_hours| int /100) * 60 * 60 %}
+            {% if utc_offset_direction == '-' %}
+             {{ launch.wsstamp - utc_offset_seconds}}
+            {% else %}
+              {{ launch.wsstamp + utc_offset_seconds}}
+            {% endif %}
+          {% endif %}
+        {% endif %}
+      {% endfor %}
+####################### NOTIFY ##############################################
+notify:
+  - name: ThallesHA
+    platform: twitter
+    consumer_key: !secret twitter_consumer_key
+    consumer_secret: !secret twitter_consumer_secret
+    access_token: !secret twitter_access_token
+    access_token_secret: !secret twitter_access_token_secret
+
+########################## AUTOMATION #######################################
+automation:
+  - alias: 'Tweet - Spotify'
+    initial_state: 'on'
+    trigger:
+      - platform: state
+        entity_id: media_player.spotify
+        to: 'playing'
+    action:
+      - service: script.tweet_engine
+        data_template:
+          tweet: >-
+            {% set title = states.media_player.spotify.attributes["media_title"] %}
+            {% set artist = states.media_player.spotify.attributes["media_artist"] %}
+            {% set phrases = [
+            "Minha família agora está ouvindo " ~ title ~ " por " ~ artist ~ " no Spotify! ",
+            "Esta casa está ouvindo " ~ title ~ " por " ~ artist ~ " no Spotify!",
+            "Minha família ama Spotify, e eu também. Agora estamos ouvindo " ~ title ~ " de " ~ artist ~ "! "
+            ] %}
+            {{phrases|random + "#Spotify" }}
+  - alias: 'Tweet - Game Thales'
+    initial_state: 'on'
+    trigger:
+      - platform: template
+        value_template: "{{ is_state_attr('sensor.steam_76561198261582146', 'game', 'Grand Theft Auto V') }}"
+      - platform: template
+        value_template: "{{ is_state_attr('sensor.steam_76561198261582146', 'game', 'Euro Truck Simulator 2') }}"
+      - platform: template
+        value_template: "{{ is_state_attr('sensor.steam_76561198261582146', 'game', \"Tom Clancy's Rainbow Six Siege\") }}"
+      - platform: template
+        value_template: "{{ is_state_attr('sensor.steam_76561198261582146', 'game', 'The Witcher 3: Wild Hunt') }}"
+    action:
+      - service: script.tweet_engine
+        data_template:
+          tweet: >-
+            {% set game = states.sensor.steam_76561198261582146.attributes["game"] %}
+            {% set phrases = [
+            "Agora o @souzaathales está jogando " ~ game ~ " na Steam! ",
+            "O @souzaathales começou a jogar " ~ game ~ "!",
+            "Agora o @souzaathales está jogando " ~ game ~ ", ele ama esse jogo hahah"
+            ] %}
+            {{phrases|random + "#Steam" }}
+  - alias: Rachio_Rain_Delay
+    hide_entity: True
+    trigger:
+      - platform: numeric_state
+        entity_id:
+          - sensor.dark_sky_precip_intensity_max
+          - sensor.dark_sky_precip_intensity
+        above: 0.5
+      - platform: numeric_state
+        entity_id: sensor.dark_sky_wind_speed
+        above: 20
+    action:
+      - service: script.tweet_engine
+        data_template:
+          tweet: >
+            {{ [
+            "Parece que vai chover, se você for sair, é melhor levar um guarda chuva!",
+            "Parece que irá chover amanhã, irei pausar o sistema de regar as plantas.",
+            "Não há motivos para regar as plantas sendo que irá chover amanhã, irei desativar os regadores por 24 horas.",
+            "A mãe natureza irá mandar chuva, então irei desligar os regadores pelas próximas 24 horas."
+            ] | random + " #SavingWater"}}
+  - alias: rain is coming
+    hide_entity: True
+    trigger:
+      - platform: state
+        entity_id: sensor.dark_sky_summary
+        to: 'Rain'
+      - platform: state
+        entity_id: sensor.dark_sky_summary
+        to: 'Light Rain'
+    action:
+      - service: script.tweet_engine
+        data_template:
+          tweet: >
+            {{ [
+            "Parece que irá começar chover logo, irei fechar as persianas e aumentar o brilho das luzes!",
+            "Visto que irá começar chover logo, irei avisar ao @souzaathales e fechar as persianas.",
+            "Parece que vai chover @souzaathales, estou fechando as persianas e aumentando o brilho das luzes."
+            ] | random + " #RainDay"}}
+  - alias: Login Failure
+    hide_entity: True
+    trigger:
+      - platform: template
+        value_template: "{{ states('persistent_notification.httplogin') != 'unknown' }}"
+    action:
+      - service: script.tweet_engine
+        data_template:
+          tweet: >
+            {{ [
+            "Sério, eu sou uma casa inteligente. Estou registrando sua tentativa de hack.",
+            "Se você não sabe a senha, você será bloqueado e seu IP será banido.",
+            "Três tentativas e você está fora! IP bloqueado."
+            ] | random + "#Security"}}
+  - alias: 'Random House stats'
+    hide_entity: True
+    trigger:
+      - platform: time
+        hours: '/3'
+        minutes: 01
+        seconds: 00
+    condition:
+      - condition: template
+        value_template: >
+          {%- if states.automation.random_house_stats.attributes.last_triggered -%}
+            {{ (as_timestamp(now()) - as_timestamp(states.automation.random_house_stats.attributes.last_triggered)) > 10000 }}
+          {%- else -%}
+            true
+          {%- endif -%}
+    action:
+      - delay: '0{{ range(0,2) | random | int }}:{{ range(10,59) | random | int }}:00'
+      - service: script.tweet_engine
+        data_template:
+          tweet: >
+            {{ [
+            "Hoje eu lembrei o @souzaathales de tomar água {{states.sensor.drink_water_times.state}} vezes. #hidratese",
+            "O Host do @home_assistant está usando atualmente {{states.sensor.disk_used_home.state}}% da minha capacidade total de armazenamento.",
+            "Lá fora está fazendo {{states.sensor.dark_sky_temperature.state}} ° C e o nível de humidade é de {{states.sensor.dark_sky_humidity.state}}%. #weather!",
+            "O computador de jogos do @souzaathales ficou ligado durante {{states.sensor.gaming_pc_on.state}} horas nos últimos 7 dias.",
+            "Agora são {{states.sensor.time.state}} em casa. A temperatura externa é de {{states.sensor.dark_sky_temperature.state}} º C e o clima está {{states.sensor.clima.state}}.",
+            "Até agora, eu preveni {{states.sensor.pihole_ads_blocked_today.state}} anúncios via PI-Hole! http://www.pi-hole.net",
+            "Pi-hole (http://www.pi-hole.net) atendeu há {{states.sensor.pihole_dns_queries_today.state}} pedidos de DNS hoje! #Pi3",
+            "Estou rodando a versão {{states.sensor.ha_installed_version.state}} do Home Assistant.",
+            "Eu sei que estará {{states.sensor.dark_sky_hourly_summary.state}} então eu irei ajustar o ar condicionado / ventiladores, irrigação e iluminação em conformidade. #Nest #Rachio #Hue #Yeelight",
+            "As estatísticas médias da minha internet são Download: {{states.sensor.speedtest_download.state}} Mbit / s & Upload {{states.sensor.speedtest_upload.state}} Mbit / s.",
+            "Home Assistant está sendo executado por {{states.sensor.ha_uptime.state}}.",
+            "Minha velocidade de download de Internet da @Gtel é de aproximadamente {{states.sensor.speedtest_download.state}} Mbit / s",
+            "Hoje a temperatura máxima lá fora será de {{states.sensor.dark_sky_daily_high_temperature.state}} º C e mínima de {{states.sensor.dark_sky_daily_low_temperature.state}} º C. A humidade atual é de {{states.sensor.dark_sky_humidity.state}}%",
+            "Cobertura média de nuvens: {{states.sensor.dark_sky_cloud_coverage.state}}%, e temperatura média: {{states.sensor.dark_sky_temperature.state}} ° C"
+            ] | random + " #RandomStat"}}
+  - alias: Notify Holiday State Change
+    hide_entity: false
+    initial_state: true
+    trigger:
+      - platform: state
+        entity_id:
+          - sensor.holiday
+    condition:
+      - condition: template
+        value_template: "{{ states('sensor.holiday') != 'unknown' }}"
+      - condition: template
+        value_template: "{{ states.sensor.holiday.state | trim != '' }}"
+    action:
+      - service: persistent_notification.create
+        data:
+          message: 'Hoje é {{ states.sensor.holiday.state }}.'
+          title: '{{ states.sensor.holiday.state }}'
+
+      - delay: '{{ (range(4, 8)|random|int) }}:{{ (range(1, 50)|random|int) }}:00'
+      - service: script.tweet_engine
+        data_template:
+          tweet: >
+            {{ [
+            "Hojé é {{ states.sensor.holiday.state }}. Hora de ajustar a cor dos leds da casa!",
+            "Hoje é {{ states.sensor.holiday.state }}.",
+            "É hoje {{ states.sensor.holiday.state }}?",
+            "Eu chequei com a Alexa & hoje é {{ states.sensor.holiday.state }}."
+            ] | random + [
+            " #DayOff",
+            "#{{ states.sensor.holiday.state }}"
+            ] | random }}
+  - alias: PiHole Daily stats Tweet!
+    trigger:
+      platform: time
+      at: '23:50:00'
+    action:
+      - delay: '00:{{ (range(1, 9)|random|int) }}:00'
+      - service: script.tweet_engine
+        data_template:
+          tweet: >
+            {{ [
+            "Eu bloqueei {{states.sensor.pihole_ads_blocked_today.state}} anúncios. Isto é {{states.sensor.pihole_ads_percentage_blocked_today.state}}% do meu trafego de internet.",
+            "Hoje eu bloqueei {{states.sensor.pihole_ads_blocked_today.state}} via Pi Hole. Anúncios, nunca mais!",
+            "Hoje foi um bom dia! Sabe por que? Porque eu bloqueei {{states.sensor.pihole_ads_blocked_today.state}} anúncios via Pi-Hole!"
+            ] | random + " #PiHole #Security Status:({{states.switch.pihole_switch.state}})"}}
+  - alias: PiHole Daily Client Tweet!
+    trigger:
+      platform: time
+      at: '04:30:00'
+    action:
+      - delay: '{{ (range(1, 6)|random|int) }}:{{ (range(1, 50)|random|int) }}:00'
+      - service: script.tweet_engine
+        data_template:
+          tweet: >
+            {{ [
+            "Atualmente {{states.sensor.pihole_dns_unique_clients.state}} clientes estão conectados em minha rede.",
+            "No momento tenho {{states.sensor.pihole_dns_unique_clients.state}} clientes em minha rede."
+            ] | random + "#Security"}}
+  - alias: 'New Twitter follower!'
+    hide_entity: True
+    trigger:
+      - platform: event
+        event_type: new_follower
+    action:
+      - service: media_player.play_media
+        data_template:
+          entity_id:
+            - media_player.kodi
+          media_content_id: "/local/sounds/twitter-chirp.mp3"
+          media_content_type: audio/mp4
+      - service: script.tweet_engine
+        data_template:
+          tweet: >-
+            {% set handle = trigger.event.data.value1 %}
+            {% set location = trigger.event.data.location %}
+            {% set phrases = [
+              "Obrigado por seguir " ~ handle ~ "! Um assovio de " ~ location ~ "!!",
+              "Hey " ~ handle ~ "! Obrigado por seguir de " ~ location ~ " !",
+              "Novo seguidor " ~ handle ~ " de " ~ location ~ ".",
+              "Boom! De " ~ location ~ " o seguidor" ~ handle ~ " me fez enviar assoviar em casa.",
+              "Quer conhecer alguém super legal? "~ handle ~" É!!! Obrigado por seguir!",
+              "Se o @souzaathales estiver em casa & e eu obter um novo seguir como o " ~ handle ~ ", eu assovio!"
+            ] %}
+            {% set hashtags = [
+              "#ThanksForTheFollow #ObrigadoPorSeguir",
+              "#FollowBack",
+              "#FollowMe"
+            ] %}
+            {{ phrases|random ~ " " ~ hashtags|random }}
+  - alias: 'ISS is above Me -Tweet'
+    trigger:
+    #  - platform: state
+     #   entity_id:
+      #    - binary_sensor.iss
+       # to: 'on'
+       # from: 'off'
+      - platform: event
+        event_type: iss_above
+    action:
+      - service: script.tweet_engine
+        data_template:
+          tweet: >
+            {{ [
+            "ISS está sobre mim neste momento!",
+            "The International Space Station flys by once a day & that time is NOW! (For me)",
+            "Posso olhar para o alto AGORA MESMO e ver a Estação Espacial Internacional.",
+            "A #ISS acaba de passar sobre mim e, atualmente {{states.binary_sensor.iss.attributes.number_of_people_in_space}} pessoas estão no",
+            "The International Space Station Rocks! And it's above me RIGHT NOW!"
+            ] | random + " #Espaço"}}
+
+  - alias: 'Full Moon -Tweet'
+    trigger:
+      - platform: state
+        entity_id: sensor.moon
+        to: 'Full Moon'
+    action:
+      - delay: '{{ (range(1, 6)|random|int) }}:{{ (range(1, 50)|random|int) }}:00'
+      - service: script.tweet_engine
+        data_template:
+          tweet: >
+            {{ [
+            "Aqui a lua estará cheia hoje à noite!",
+            "Desejo que meus painéis solares peguem raios da lua. A lua estará cheia esta noite.",
+            "Desligue as luzes, a lua estará cheia hoje à noite.",
+            "Peguem seus telescópios, a lua estará cheia esta noite!"
+            ] | random + "#Space"}}
+
+  - alias: Launch Window Approaching
+    trigger:
+      - platform: state
+        entity_id: sensor.launch_window
+    condition:
+        condition: and
+        conditions:
+          - condition: template
+            value_template: "{{states('sensor.launch_window') != 'unknown'}}"
+          - condition: template
+            value_template: "{{as_timestamp(now()) < (states('sensor.launch_window') | float)}}"
+
+    action:
+      - service: notify.ios_thaless_iphone_7
+        data:
+          message: 'There will be a rocket Launch today - I will notify you later when the launch window starts'
+      - wait_template: >-
+          {{as_timestamp(now()) >= (states('sensor.launch_window') | float)}}
+      - service: notify.ios_thaless_iphone_7
+        data:
+          message: 'Go Outside!  There is a Rocket Launch!'
+      - service: script.tweet_engine
+        data_template:
+          tweet: 'Um lançamento de foguete está acontecendo agora mesmo! Eu posso ver se olhar bem. @BrianCribbs #SpaceX #Space'
+
