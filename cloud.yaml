@@ -10,7 +10,38 @@
     entity_config:
       light.ceiling_light:
         name: Bedroom Light
-        description: Master Bedroom Light
+        description: Master Bedroom Main Light
       switch.thalles_pc:
         name: Gaming Computer
         description: Thales' Gaming Computer
+      cover.bedroom_blinds:
+        name: Bedroom Blinds 
+        description: Master Bedroom Blinds 
+      fan.ceiling_fan:
+        name: Bedroom Fan 
+        description: Master Bedroom Main Fan
+      switch.imac:
+        name: Thales' iMac 
+        description: Thales' iMac
+      switch.pihole_switch:
+        name: Pi Hole
+        description: Pi Hole Ads Blocker
+      input_boolean.drink_water:
+        name: Drink Water Reminder
+        description: Drink Water Reminder 
+      media_player.kodi:
+        name: Master Bedroom Kodi 
+        description: Master Bedroom Kodi 
+      media_player.spotify:
+        name: Spotify 
+        description: Spotify 
+      script.radio538:
+        name: Start Playing Radio 
+        description: Start Playing Home Assistant Radio
+      script.radio_pause:
+        name: Stop Radio
+        description: Stop Home Assistant Radio 
+      input_boolean.alarm_clock_status:
+        name: Alarm Clock 
+        description: Home Assistant Alarm Clock 
+      
