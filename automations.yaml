@@ -1,21 +1,22 @@
+ 
   #notify when internet comes down
   - alias: 'Notify internet offline'
     trigger:
       - platform: state
-        entity_id: sensor.external_ip
-        to: unavailable
+        entity_id: sensor.speedtest_ping
+        to: unknown
     action: 
-      - service: notify.thaless_iphone_7
+      - service: notify.ios_thaless_iphone_7
         data:
           message: "Internet connection offline. Now we are offline :("
   #notify when internet comes back
   - alias: 'Notify internet comes back'
     trigger:
       - platform: state
-        entity_id: sensor.external_ip
-        from: unavailable
+        entity_id: sensor.speedtest_ping
+        from: unknown
     action: 
-      - service: notify.thaless_iphone_7
+      - service: notify.ios_thaless_iphone_7
         data:
           message: "Internet connection are back. Now we are online :D"
   # Turn vacation mode on automatically
@@ -98,8 +99,15 @@
         entity_id: sun.sun
         state: 'below_horizon'
     action:
-        service: scene.turn_on
-        entity_id: scene.livingroom_normal
+        - service: scene.turn_on
+          entity_id: scene.livingroom_normal
+        - service: script.tweet_engine
+          data_template:
+            tweet: >
+              {{ [
+              "Parece que o filme acabou, já que está escuro é hora de aumentar o brilho das luzes!",
+              "Irei agora aumentar o brilho das luzes, já que o filme acabou e a TV foi desligada."
+              ] | random + " #movietime"}}
   #light on media player start/stop
   - alias: "Media player playing"
     trigger:
@@ -112,8 +120,15 @@
         entity_id: sun.sun
         state: 'below_horizon'
     action:
-        service: scene.turn_on
-        entity_id: scene.livingroom_dim
+        - service: scene.turn_on
+          entity_id: scene.livingroom_dim
+        - service: script.tweet_engine
+          data_template:
+            tweet: >
+              {{ [
+              "Minha família começou a assistir a um filme, irei fechar as persianas e diminuir o brilho das luzes!",
+              "Irei agora abaixar o brilho das luzes e fechar as persianas, pois minha família está indo assistir a um filme na TV."
+              ] | random + " #movietime"}}
   - alias: Notify Of New External IP
     initial_state: 'on'
     trigger:
@@ -126,6 +141,13 @@
       - service: notify.ios_thaless_iphone_7
         data:
           message: "Your External IP changed from {{ trigger.from_state.state }} to {{ trigger.to_state.state }}"
+      - service: script.tweet_engine
+        data_template:
+          tweet: >
+            {{ [
+            "Parece que meu endereço de IP mudou. @souzaathales, por favor cheque isto.",
+            "Hora de atualizar as coisas @souzaathales. Parece que meu endereço de IP mudou."
+            ] | random + " #HomeAutomation"}}
   - alias: 'drink water reminder hourly'
     trigger:
       - platform: time
@@ -163,7 +185,13 @@
           entity_id: input_boolean.drink_water
           state: 'on'
     action:
+      - service: homeassistant.turn_on
+        entity_id: input_boolean.drinkwatersave
+      - delay: 00:00:05
       - service: script.drink_water_hourly
+      - delay: 00:01:00
+      - service: homeassistant.turn_off
+        entity_id: input_boolean.drinkwatersave
   - alias: 'pc restart'
     trigger:
       platform: state
@@ -260,7 +288,7 @@
       condition: and
       conditions:
         - condition: state
-          entity_id: group.all_devices
+          entity_id: group.home_devices
           state: home
         - condition: sun
           after: sunset
@@ -278,7 +306,7 @@
       at: "22:00:00"
     condition:
       condition: state
-      entity_id: group.all_devices
+      entity_id: group.home_devices
       state: home
     action:
       service: alarm_control_panel.alarm_arm_home
@@ -292,7 +320,7 @@
       at: "07:00:00"
     condition:
       condition: state
-      entity_id: group.all_devices
+      entity_id: group.home_devices
       state: home
     action:
       service: alarm_control_panel.alarm_disarm
@@ -544,9 +572,13 @@
       - platform: state
         entity_id: updater.updater
     action:
-      service: notify.ios_thaless_iphone_7
-      data:
-        message: "Home Assistant {{ states('updater.updater') }} is available."
+      - service: notify.ios_thaless_iphone_7
+        data:
+          message: "Home Assistant {{ states('updater.updater') }} is available."
+      - service: script.tweet_engine
+        data:
+          tweet: "Nova versão do @Home_Assistant! Espero que o @souzaathales insale logo! - {{ states('updater.updater') }}"
+
   #restart notify
   - alias: Notify of Home Assistant restart
     trigger:
@@ -564,7 +596,7 @@
             tag: 'notification-about-restart'
       - delay: 00:01:00
       - service: homeassistant.turn_on
-        entity_id: input_boolean.drink_water_now
+        entity_id: input_boolean.drink_water
   #clear tts clache
   - alias: Flush TTS Cache
     trigger:
@@ -575,6 +607,9 @@
       - service: notify.ios_thaless_iphone_7
         data:
           message: "TTS cache cleared."
+      - service: script.tweet_engine
+        data:
+          tweet: "São 2:35, isso significa que devo limpar o cache de TTS para estar tudo pronto quando amanhecer :)"
   #dark theme at night
   - alias: 'Set dark theme for the night'
     initial_state: True
@@ -622,20 +657,28 @@
        offset: "-00:10:00"
     condition:
       condition: state
-      entity_id: group.all_devices
+      entity_id: group.home_devices
       state: home
     action:
-      service: light.turn_on
-      entity_id: light.ceiling_light
-      data:
-        brightness: 140
-        transition: 10
+      - service: light.turn_on
+        entity_id: light.ceiling_light
+        data:
+          brightness: 140
+          transition: 10
+      - service: script.tweet_engine
+        data_template:
+          tweet: >
+            {{ [
+            "Agora são {{states.sensor.time.state}} e está ficando escuro. Estou ligando as luzes para minha família. Eu sou tão legal!",
+            "É hora de aumentar o brilho das luzes e fechar as persianas para minha família. São {{states.sensor.time.state}} e está ficando escuro.",
+            "Já são {{states.sensor.time.state}} e está ficando escuro. Estou ligando as luzes e fechando as persianas para minha família."
+            ] | random + " #Goodnight"}}
   - alias: 'Send notification when sun rises and turn lights off'
     initial_state: True
     trigger:
       platform: sun
       event: sunrise
-      offset: '+00:00:00'
+      offset: "00:30:00"
     action:
       - service: script.goodmorning_informations
 
@@ -646,6 +689,14 @@
 
       - service: light.turn_off
         entity_id: group.all_lights
+
+      - service: script.tweet_engine
+        data_template:
+          tweet: >
+            {{ [
+            "O sol está nascendo, é hora de desligar as luzes externas.",
+            "É hora desligar as luzes externas, o sol está nascendo!"
+            ] | random + " #GoodMorning"}}
 
   - alias: 'Send notification when sun sets'
     initial_state: True

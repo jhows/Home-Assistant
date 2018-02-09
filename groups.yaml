@@ -24,6 +24,7 @@
     entities:
       - group.camera
       - camera.praca_7bh
+      - camera.iss
       - camera.thales_cam
   weather_view:
     view: yes
@@ -38,10 +39,12 @@
       - group.livingroom
       - group.weather
       - group.currency
+      - group.correios
       - group.alarm_clock
       - group.battery
       - group.residence_radio
       - group.netspeed
+      - group.torrent_control
       - group.system
       - camera.frontdoor_camera
       - camera.outdoor
@@ -70,6 +73,29 @@
       - group.system
       - group.netspeed
 ####GROUPs
+  torrent_control:
+    name: Torrent Stauts 
+    entities:
+      - switch.transmission_turtle_mode
+      - sensor.transmission_status
+      - sensor.transmission_active_torrents
+      - sensor.transmission_down_speed
+      - sensor.transmission_up_speed
+  home_devices:
+    name: devices
+    entities:
+      - device_tracker.thaless_iphone_7
+      - input_select.thales_status
+      - device_tracker.taylon_brother
+  correios:
+    name: Correios 
+    entities:
+      - sensor.rastreio_destino
+      - sensor.rastreio_numero
+      - sensor.rastreio_local
+      - sensor.rastreio_cidade
+      - sensor.rastreio_data
+      - sensor.rastreio_hora
   mega_sena:
     name: Mega Sena
     entities:
@@ -136,7 +162,8 @@
       - sensor.ram_used
       - sensor.disk_used_home
       - sensor.disk_free_home
-      - sensor.hassio_uptime
+      - sensor.homeassistant_v2db
+      - sensor.ha_uptime
   home_status:
     name: Home Status
     entities:

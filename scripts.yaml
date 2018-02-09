@@ -1,3 +1,12 @@
+  tweet_engine:
+   sequence:
+   # - service: ifttt.trigger
+     # data_template: >
+    #    {{"event":"post_facebook_bot", "value1":"{{ tweet }} #IOT #SmartHome"}}
+    - service: notify.twitter_home
+      data_template:
+        message: >-
+          {{ tweet }} #IOT #SmartHome
   ## Vacation mode lights
   # Turns lights on and off after sunset
   vacation_lights:

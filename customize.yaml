@@ -1,6 +1,23 @@
+binary_sensor.iss:
+  icon: mdi:satellite-variant
+  friendly_name: ISS Visibility
+  hidden: false
+  homebridge_hidden: true
+sensor.launch_window:
+  hidden: false
+  icon: mdi:rocket
+  friendly_name: Rocket Launch Window
+sensor.holiday:
+  hidden: true
+  icon: mdi:beach
+  friendly_name: US Holiday
+sensor.flag:
+  hidden: true
+  icon: mdi:flag
+  friendly_name: Flag Day
 sensor.day_night:
   templates:
-    rgb_color: "if (state === 'Day') return [253, 216, 53];"
+    rgb_color: if (state === 'Day') return [253, 216, 53];
 sensor.external_ip:
   friendly_name: External IP
   icon: mdi:earth
@@ -155,7 +172,7 @@ input_boolean.dark_theme_status:
   homebridge_model: Nothing
   homebridge_serial: Nothing
   templates:
-    rgb_color: "if (state === 'on') return [253, 216, 53];"
+    rgb_color: if (state === 'on') return [253, 216, 53];
 group.alarm_clock:
   icon: mdi:alarm
 sensor.time:
@@ -181,7 +198,7 @@ input_boolean.alarm_clock_status:
   icon: mdi:alarm-check
   homebridge_visible: true
   templates:
-    rgb_color: "if (state === 'on') return [253, 216, 53];"
+    rgb_color: if (state === 'on') return [253, 216, 53];
 sensor.home_to_college:
   friendly_name: Home To College (Driving)
   icon: mdi:car
@@ -272,20 +289,20 @@ sensor.thaless_iphone_7_battery_state:
   custom_ui_state_card: state-card-custom-ui
   show_last_changed: true
   templates:
-    rgb_color: "if (state === 'Charging') return [253, 216, 53];"
+    rgb_color: if (state === 'Charging') return [253, 216, 53];
 input_boolean.vacation_mode:
   templates:
-    rgb_color: "if (state === 'on') return [253, 216, 53];"
+    rgb_color: if (state === 'on') return [253, 216, 53];
 input_boolean.friend_visiting:
   templates:
-    rgb_color: "if (state === 'on') return [253, 216, 53];"
+    rgb_color: if (state === 'on') return [253, 216, 53];
 sensor.moon:
   custom_ui_state_card: state-card-custom-ui
   show_last_changed: true
 sensor.kodistatus:
   icon: mdi:speaker-wireless
   templates:
-    rgb_color: "if (state === 'Playing') return [253, 216, 53];"
+    rgb_color: if (state === 'Playing') return [253, 216, 53];
 camera.thales_cam:
   friendly_name: Localização Thales
 group.residence_radio:
@@ -296,7 +313,7 @@ media_player.kodi: {}
 input_boolean.drink_water:
   icon: mdi:cup-water
   templates:
-    rgb_color: "if (state === 'on') return [253, 216, 53];"
+    rgb_color: if (state === 'on') return [253, 216, 53];
 sensor.proximo_valor:
   friendly_name: Valor Acumulado
   icon: mdi:currency-usd
@@ -312,4 +329,30 @@ sensor.numeros_sorteados:
 sensor.sorteio_numero:
   icon: mdi:ticket-confirmation
 group.default_view:
-  friendly_name: Thalles' Home
+  friendly_name: Home
+sensor.rastreio_destino:
+  friendly_name: Descrição
+  icon: mdi:format-list-bulleted
+sensor.rastreio_numero:
+  icon: mdi:barcode
+sensor.rastreio_local:
+  icon: mdi:map-marker
+sensor.rastreio_cidade:
+  icon: mdi:city
+sensor.rastreio_data:
+  icon: mdi:calendar-range
+sensor.rastreio_hora:
+  icon: mdi:clock
+switch.transmission_turtle_mode:
+  friendly_name: Turtle Mode
+  icon: mdi:gauge-low
+sensor.transmission_down_speed:
+  friendly_name: Download Speed
+  icon: mdi:download
+sensor.transmission_up_speed:
+  friendly_name: Upload Speed
+  icon: mdi:upload
+sensor.ha_uptime:
+  icon: mdi:clock
+sensor.homeassistant_v2db:
+  friendly_name: HA DB File
