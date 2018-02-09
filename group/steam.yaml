@@ -1,0 +1,14 @@
+
+  steam:
+    name: Steam
+    entities:
+      - sensor.steam_76561198261582146 #Thalles
+      - sensor.steam_76561197989609256 #Hartman
+      - sensor.steam_76561198116211333 #samuel
+      - sensor.steam_76561198258264934 #paulo
+      - sensor.steam_76561198317256910 #aturzin
+      - sensor.steam_76561198143433420 #sherif
+      - sensor.steam_76561198268124962 #carol
+      - sensor.steam_76561198008091511 #leo
+      - sensor.steam_76561197971962927 #luciano
+      - sensor.steam_76561198050443833 #luke

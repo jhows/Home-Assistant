@@ -1,0 +1,44 @@
+  - alias: 'drink water reminder hourly'
+    trigger:
+      - platform: time
+        at: '07:00:00'
+      - platform: time
+        at: '08:00:00'
+      - platform: time
+        at: '09:00:00'
+      - platform: time
+        at: '10:00:00'
+      - platform: time
+        at: '11:00:00'
+      - platform: time
+        at: '13:00:00'
+      - platform: time
+        at: '14:00:00'
+      - platform: time
+        at: '15:00:00'
+      - platform: time
+        at: '16:00:00'
+      - platform: time
+        at: '17:00:00'
+      - platform: time
+        at: '18:00:00'
+      - platform: time
+        at: '19:00:00'
+      - platform: time
+        at: '20:00:00'
+      - platform: time
+        at: '22:00:00'
+    condition:
+      condition: and
+      conditions:
+        - condition: state
+          entity_id: input_boolean.drink_water
+          state: 'on'
+    action:
+      - service: homeassistant.turn_on
+        entity_id: input_boolean.drinkwatersave
+      - delay: 00:00:05
+      - service: script.drink_water_hourly
+      - delay: 00:01:00
+      - service: homeassistant.turn_off
+        entity_id: input_boolean.drinkwatersave

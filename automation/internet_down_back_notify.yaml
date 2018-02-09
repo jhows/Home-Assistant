@@ -1,0 +1,20 @@
+  #notify when internet comes down
+  - alias: 'Notify internet offline'
+    trigger:
+      - platform: state
+        entity_id: sensor.speedtest_ping
+        to: unknown
+    action: 
+      - service: notify.ios_thaless_iphone_7
+        data:
+          message: "Internet connection offline. Now we are offline :("
+  #notify when internet comes back
+  - alias: 'Notify internet comes back'
+    trigger:
+      - platform: state
+        entity_id: sensor.speedtest_ping
+        from: unknown
+    action: 
+      - service: notify.ios_thaless_iphone_7
+        data:
+          message: "Internet connection are back. Now we are online :D"

@@ -1,0 +1,5 @@
+
+  - name: wall tablet
+    platform: lannouncer
+    host: 192.168.1.7
+    port: 1035

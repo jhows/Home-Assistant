@@ -1,0 +1,22 @@
+  #notification when my pc turn off 
+  - alias: Pc notifications off
+    trigger:
+      - platform: state
+        entity_id: switch.thalles_pc
+        from: 'on'
+        to: 'off'
+    action:
+      - service: script.turn_on
+        data:
+          entity_id: script.pc_off_push
+  #notification when my pc turn on
+  - alias: Pc notifications on
+    trigger:
+      - platform: state
+        entity_id: switch.thalles_pc
+        from: 'off'
+        to: 'on'
+    action:
+      - service: script.turn_on
+        data:
+          entity_id: script.pc_on_push

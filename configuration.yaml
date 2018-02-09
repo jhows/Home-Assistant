@@ -1,0 +1,297 @@
+homeassistant:
+  name: Thalles' Home
+  latitude: !secret lat
+  longitude: !secret long
+  elevation: !secret elev
+  unit_system: metric
+  time_zone: America/Sao_Paulo
+  customize: !include customize.yaml
+  packages: !include_dir_named packages
+  customize_glob:
+    light.*:
+      custom_ui_state_card: custom-ui
+    cover.*:
+      custom_ui_state_card: custom-ui
+    switch.thalles_pc:
+      custom_ui_state_card: custom-ui
+    sensor.speedtest_download:
+      custom_ui_state_card: custom-ui
+    sensor.speedtest_ping:
+      custom_ui_state_card: custom-ui
+    sensor.speedtest_upload:
+      custom_ui_state_card: custom-ui
+    sensor.usd:
+      custom_ui_state_card: custom-ui
+    sensor.dark_sky_apparent_temperature:
+      custom_ui_state_card: custom-ui
+    sensor.dark_sky_daily_high_temperature:
+      custom_ui_state_card: custom-ui
+    sensor.dark_sky_daily_low_temperature:
+      custom_ui_state_card: custom-ui
+    sensor.dark_sky_humidity:
+      custom_ui_state_card: custom-ui
+    sensor.dark_sky_precip_intensity:
+      custom_ui_state_card: custom-ui
+    sensor.dark_sky_precip_probability:
+      custom_ui_state_card: custom-ui
+    sensor.dark_sky_summary:
+      custom_ui_state_card: custom-ui
+    sensor.dark_sky_temperature:
+      custom_ui_state_card: custom-ui
+    sensor.moon:
+      custom_ui_state_card: custom-ui
+    sensor.thaless_iphone_7_battery_level:
+      custom_ui_state_card: custom-ui
+    sensor.thaless_iphone_7_battery_state:
+      custom_ui_state_card: custom-ui
+
+zone: !include_dir_merge_list zones
+frontend: !include frontend.yaml
+scene: !include_dir_merge_list scene
+config:
+http:
+  api_password: !secret http_password
+  base_url: !secret baseurl
+  ssl_certificate: /ssl/fullchain.pem
+  ssl_key: /ssl/privkey.pem
+  ip_ban_enabled: True
+  login_attempts_threshold: 5
+updater:
+discovery:
+device_tracker: !include_dir_merge_list device_tracker
+conversation:
+history:
+logbook:
+zeroconf:
+ios:
+recorder:
+  purge_interval: 2
+  purge_keep_days: 5
+  exclude:
+    domains:
+      - automation
+      - updater
+    entities:
+      - sun.sun # Don't record sun data
+      - sensor.alarm_clock_hour
+      - sensor.alarm_clock_minute
+      - sensor.alarm_clock_time
+      - sensor.alarm_clock_time_long
+      - sensor.steam_76561198317256910
+camera: !include_dir_merge_list cameras
+notify: !include_dir_merge_list notify
+# Enables a map showing the location of tracked devices
+map:
+# Track the sun
+sun:
+mqtt:
+  broker: !secret mqttbroker
+  client_id: !secret mqttclient
+  username: !secret mqttuser
+  password: !secret mqttpass
+ifttt:
+  key: !secret iftttkey
+media_player: !include_dir_merge_list media_player
+# Weather prediction
+input_number:
+  alarm_clock_hour:
+    min: 0
+    max: 23
+    step: 1
+  alarm_clock_minute:
+    min: 0
+    max: 55
+    step: 5
+  volume_radio:
+    name: Volume
+    icon: mdi:volume-high
+    min: 0
+    max: 1
+    step: 0.01
+input_select:
+  thales_status:
+    name: Thales Status
+    options:
+     - "Sleeping"
+     - "At Home"
+     - "Away"
+    initial: "At Home"
+  pcoptions:
+    name: PC Power Options
+    options:
+      - Restart
+      - Shutdown
+      - None
+      - Sleep
+      - Lock
+    initial: None
+    icon: mdi:monitor
+  radio_station:
+    name: 'Select Radio Station:'
+    options:
+      - Coca Cola FM
+      - Los Santos Rock
+      - Truckers FM
+      - Cidade Caratinga
+      - Rádio Caratinga
+      - Q-Music
+      - 3FM
+      - 100% NL
+      - Veronica
+      - Sky Radio
+      - Arrow Classic Rock
+      - Classic FM
+      - BNR Nieuwsradio
+      - SLAM! Hardstyle
+      - Sleep Radio
+      - Ambient Sleeping Pill
+      - Radio Art - Sleep
+      - Ambi Nature Radio
+      - Calm Radio - Sleep
+      - Dinamo.FM Sleep
+      - Musica Anos 80
+  chromecast_radio:
+    name: 'Select Speakers:'
+    options:
+      - Bedroom
+      - Livingroom
+    initial: Bedroom
+    icon: mdi:speaker-wireless
+
+input_boolean:
+  drinkwatersave:
+    initial: off
+  vacation_mode:
+    name: "On Vacation"
+    initial: off
+    icon: mdi:airplane
+
+  friend_visiting:
+    name: "Friend Visiting"
+    initial: off
+    icon: mdi:wallet-travel
+
+  drink_water:
+    name: "Drink water Reminder"
+  study_time:
+    name: Study Time
+    initial: off
+
+  alarm_clock_status:
+
+  dark_theme_status:
+    initial: on
+
+  good_morning_summary:
+    name: Speak the weather and traffic
+    initial: off
+cover:
+  #- platform: mqtt
+   # state_topic: "thome/bedroom_blinds/cover/state"
+   # command_topic: "thome/bedroom_blinds/cover/command"
+   # name: "bedroom_blinds"
+   # qos: 0
+   # retain: true
+   # payload_open: "OPEN"
+   # payload_close: "CLOSE"
+   # payload_stop: "STOP"
+   # state_open: "OPEN"
+   # state_closed: "CLOSE"
+   # optimistic: false
+   # value_template: '{{ value }}'
+   # tilt_command_topic: "thome/bedroom_blinds/cover/tilt"
+   # tilt_status_topic: "thome/bedroom_blinds/cover/tilt-status"
+   # tilt_min : 0
+   # tilt_max: 100
+   # tilt_opened_value : 50
+   # tilt_closed_value : 0
+  - platform: mqtt
+    state_topic: "thome/bedroom_blinds/cover/state"
+    command_topic: "thome/bedroom_blinds/cover/command"
+    name: "bedroom_blinds"
+    payload_open: "OPEN"
+    payload_close: "CLOSE"
+    payload_stop: "STOP"
+    state_open: "OPEN"
+    state_closed: "CLOSE"
+    value_template: '{{ value }}'
+    tilt_command_topic: "thome/bedroom_blinds/cover/tilt"
+    tilt_status_topic: "thome/bedroom_blinds/cover/tilt-status"
+    tilt_min : 0
+    tilt_max: 100
+    tilt_opened_value : 50
+    tilt_closed_value : 0
+    device_class: 'window'
+fan:
+  - platform: mqtt
+    name: Ceiling Fan
+    state_topic: "Ceiling_Fan/on/state"
+    command_topic: "Ceiling_Fan/on/set"
+    oscillation_state_topic: "Ceiling_Fan/oscillation/state"
+    oscillation_command_topic: "Ceiling_Fan/oscillation/set"
+    speed_state_topic: "Ceiling_Fan/speed/state"
+    speed_command_topic: "Ceiling_Fan/speed/set"
+    qos: 0
+    payload_on: "true"
+    payload_off: "false"
+    payload_oscillation_on: "true"
+    payload_oscillation_off: "false"
+    payload_low_speed: "low"
+    payload_medium_speed: "medium"
+    payload_high_speed: "high"
+    speeds:
+      - low
+      - medium
+      - high
+  - platform: mqtt
+    name: Ceiling Fan l
+    state_topic: "Ceiling_Fan_l/on/state"
+    command_topic: "Ceiling_Fan_l/on/set"
+    oscillation_state_topic: "Ceiling_Fan_l/oscillation/state"
+    oscillation_command_topic: "Ceiling_Fan_l/oscillation/set"
+    speed_state_topic: "Ceiling_Fan_l/speed/state"
+    speed_command_topic: "Ceiling_Fan_l/speed/set"
+    qos: 0
+    payload_on: "true"
+    payload_off: "false"
+    payload_oscillation_on: "true"
+    payload_oscillation_off: "false"
+    payload_low_speed: "low"
+    payload_medium_speed: "medium"
+    payload_high_speed: "high"
+    speeds:
+      - low
+      - medium
+      - high
+cloud: !include cloud.yaml
+light:
+#  - platform: flux_led
+ #   devices:
+  #    192.168.0.106:
+   #     name: Desk LED Strip
+  - platform: yeelight
+    devices:
+      192.168.1.5:
+        name: Ceiling Light
+        transition: 1000
+switch: !include_dir_merge_list switch
+
+shell_command:
+  shutdown_pc: '/usr/bin/curl -X GET "http://192.168.1.3:7760/poweroff"'
+  restart_pc: '/usr/bin/curl -X GET "http://192.168.1.3:7760/reboot"'
+  lock_pc: '/usr/bin/curl -X GET "http://192.168.1.3:7760/lock"'
+  sleep_pc: '/usr/bin/curl -X GET "http://192.168.1.3:7760/suspend"'
+  shutdown_mac: !secret macshutdown
+
+# Weather Prediction
+sensor: !include_dir_merge_list sensor
+
+tts: !include tts.yaml
+alarm_control_panel: !include alarm.yaml
+panel_custom: !include_dir_merge_list panel_custom
+panel_iframe: !include_dir_merge_list panel_iframe
+group: !include_dir_merge_named group
+automation: !include_dir_merge_list automation
+script: !include_dir_merge_named script
+binary_sensor: !include_dir_merge_list binary_sensors
+

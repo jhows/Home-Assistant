@@ -1,0 +1,26 @@
+  #record video when motion is detected at bedroom
+  - alias: "Bedroom video recorder motion"
+    trigger:
+      - platform: numeric_state
+        entity_id: sensor.ip_webcam_motion
+        above: 900
+    action:
+      - service: script.turn_recorder_on
+      - delay: 0:5
+      - service: script.turn_recorder_off
+
+  #battery alert
+  - alias: "Wall tablet batery alert"
+    trigger:
+      - platform: numeric_state
+        entity_id: sensor.ip_webcam_battery_level
+        below: '20'
+    action:
+      - service: tts.google_say
+        entity_id: media_player.bedroom_wall
+        data:
+          message: 'Low battery on bedroom wall tablet!'
+      - service: notify.ios_thaless_iphone_7
+        data:
+          title: "Alert!"
+          message: "Low battery on bedroom wall tablet!"

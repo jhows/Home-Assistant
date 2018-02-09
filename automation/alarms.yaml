@@ -1,0 +1,188 @@
+
+  - alias: 'light on gradually with alarm'
+    initial_state: True
+    hide_entity: False
+    trigger:
+      platform: template
+      value_template: '{{ states.sensor.time.state == states.sensor.alarm_clock_time_long.state }}'
+    condition:
+      condition: and
+      conditions:
+        - condition: time
+          weekday:
+            - mon
+            - tue
+            - wed
+            - thu
+            - fri
+        - condition: state
+          entity_id: input_boolean.alarm_clock_status
+          state: 'on'
+    action:
+      - service: script.wake_up
+
+      - service: notify.ios_thaless_iphone_7
+        data:
+          message: 'Time to Wake Up!'
+          title: "Good morning Thalles."
+          data:
+            push:
+              sound: "goodmorningalarm.wav"
+  #arm alarm at night if ha restart
+  - alias: 'Arm alarm if restart'
+    initial_state: 'on'
+    trigger:
+     - platform: homeassistant
+       event: start
+    condition:
+      condition: and
+      conditions:
+        - condition: state
+          entity_id: group.home_devices
+          state: home
+        - condition: sun
+          after: sunset
+        - condition: sun
+          before: sunrise
+    action:
+      service: alarm_control_panel.alarm_arm_home
+      data:
+        entity_id: alarm_control_panel.home_alarm
+        code: !secret alarmcode
+  #arm alarm at night
+  - alias: 'Arm alarm at night'
+    trigger:
+      platform: time
+      at: "22:00:00"
+    condition:
+      condition: state
+      entity_id: group.home_devices
+      state: home
+    action:
+      service: alarm_control_panel.alarm_arm_home
+      data:
+        entity_id: alarm_control_panel.home_alarm
+        code: !secret alarmcode
+  #disarm at morning
+  - alias: 'Disarm alarm in the morning'
+    trigger:
+      platform: time
+      at: "07:00:00"
+    condition:
+      condition: state
+      entity_id: group.home_devices
+      state: home
+    action:
+      service: alarm_control_panel.alarm_disarm
+      data:
+        entity_id: alarm_control_panel.home_alarm
+        code: !secret alarmcode
+  #motion test
+  - alias: "bedroom alarm"
+    trigger:
+      - platform: state
+        entity_id: light.ceiling_light
+        from: 'off'
+        to: 'on'
+    condition:
+      condition: and
+      conditions:
+        - condition: state
+          entity_id: alarm_control_panel.home_alarm
+          state: 'armed_away'
+    action:
+      - service: script.alarm_light
+      - service: notify.ios_thaless_iphone_7
+        data:
+          title: "Alert!"
+          message: "Motion detected in Bedroom"
+  #alarm home
+  - alias: 'Send notification when alarm tunned on Home'
+    trigger:
+      - platform: state
+        entity_id: alarm_control_panel.home_alarm
+        to: 'armed_home'
+    action:
+      - service: notify.ios_thaless_iphone_7
+        data:
+          message: "The house alarm has been switched on in home mode. Goodnight"
+          data:
+            attachment:
+              content-type: jpeg
+            push:
+              category: camera
+            entity_id: camera.frontdoor_camera
+      - service: notify.html5
+        data_template:
+          message: "The house alarm has been switched on in home mode. Goodnight."
+        data:
+          data:
+            tag: 'notification-about-alarm'
+            image: !secret html5cameraimage
+            url: !secret html5cameraurl
+      - service: media_player.volume_set
+        data:
+          entity_id: media_player.bedroom_wall
+          volume_level: 1.00
+      - service: tts.google_say
+        entity_id: media_player.bedroom_wall
+        data:
+          message: 'The house alarm has been switched on in home mode. Goodnight'
+      - service: script.turn_on
+        data:
+          entity_id: script.light_notify
+  #alarm away
+  - alias: 'Send notification when alarm tunned on Away'
+    trigger:
+      - platform: state
+        entity_id: alarm_control_panel.home_alarm
+        to: 'armed_away'
+    action:
+      - service: notify.ios_thaless_iphone_7
+        data:
+          message: "The house alarm has been switched on in away mode. Goodbye"
+          data:
+            data:
+            attachment:
+              content-type: jpeg
+            push:
+              category: camera
+            entity_id: camera.frontdoor_camera
+      - service: tts.google_say
+        entity_id: media_player.bedroom_wall
+        data:
+          message: 'The house alarm has been switched on in away mode. Goodbye'
+  #alarm off
+  - alias: 'Send notification when alarm tunned off'
+    trigger:
+      - platform: state
+        entity_id: alarm_control_panel.home_alarm
+        to: 'disarmed'
+    action:
+      - service: notify.ios_thaless_iphone_7
+        data:
+          message: "The house alarm has been Deactivated"
+          data:
+            push:
+              badge: 0
+      - service: tts.google_say
+        entity_id: media_player.bedroom_wall
+        data:
+          message: 'The house alarm has been Deactivated'
+      - service: script.turn_on
+        data:
+          entity_id: script.alarm_off
+  #arming alarm notification
+  - alias: 'Alarm Away Mode Arming'
+    trigger:
+      - platform: state
+        entity_id: alarm_control_panel.home_alarm
+        to: 'pending'
+    action:
+      - service: notify.ios_thaless_iphone_7
+        data:
+          message: "House alarm activating, ensure all doors and windows are closed"
+      - service: tts.google_say
+        entity_id: media_player.bedroom_wall
+        data:
+          message: 'House alarm activating, ensure all doors and windows are closed'

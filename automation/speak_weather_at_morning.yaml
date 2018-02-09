@@ -1,0 +1,40 @@
+  #turn morning summary on at 6
+  - alias: Turn Morning summary boolean on at 6am mon-fri
+    trigger:
+      platform: time
+      at: '06:00:00'
+    condition:
+        condition: state
+        entity_id: device_tracker.thaless_iphone_7
+        state: 'home'
+    action:
+      service: homeassistant.turn_on
+      entity_id: input_boolean.good_morning_summary
+    #morning summary
+  - alias: Speak the weather and morning commute time
+    trigger:
+      - platform: state
+        entity_id: light.ceiling_light
+        from: 'off'
+        to: 'on'
+    condition:
+      condition: and
+      conditions:
+        - condition: state
+          entity_id: device_tracker.thaless_iphone_7
+          state: 'home'
+        - condition: state
+          entity_id: input_boolean.good_morning_summary
+          state: 'on'
+    action:
+     # - service: notify.wall_tablet
+      #  data_template:
+       #   message: >
+        #    Good morning, Thalles. The time is now(). It is currently {{states('sensor.dark_sky_temperature')}} degrees outside. Today's weather is {{states('sensor.dark_sky_summary')}}. There will be a high of {{states('sensor.dark_sky_daily_high_temperature')}} and a low of {{states('sensor.dark_sky_daily_low_temperature')}}. If you left now, it would take approximately {{states('sensor.home_to_school')}} minutes to get to school.
+      - service: tts.google_say
+        entity_id: media_player.bedroom_wall
+        data_template:
+          message: >
+            Good morning, Thalles. The time is {{states('sensor.time')}}. It is currently {{states('sensor.dark_sky_temperature')}} degrees outside. Today's weather is {{states('sensor.dark_sky_summary')}}. There will be a high of {{states('sensor.dark_sky_daily_high_temperature')}} and a low of {{states('sensor.dark_sky_daily_low_temperature')}}. If you left now, it would take approximately {{states('sensor.home_to_school')}} minutes to get to school.
+      - service: homeassistant.turn_off
+        entity_id: input_boolean.good_morning_summary

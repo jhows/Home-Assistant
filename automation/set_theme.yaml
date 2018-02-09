@@ -1,0 +1,38 @@
+  #dark theme at night
+  - alias: 'Set dark theme for the night'
+    initial_state: True
+    trigger:
+      - platform: sun
+        event: sunset
+    condition:
+      condition: state
+      entity_id: input_boolean.dark_theme_status
+      state: 'on'
+    action:
+      - service: frontend.set_theme
+        data:
+          name: midnight
+  #normal theme at day
+  - alias: 'Set normal theme for day'
+    initial_state: True
+    trigger:
+      - platform: sun
+        event: sunrise
+    condition:
+      condition: state
+      entity_id: input_boolean.dark_theme_status
+      state: 'on'
+    action:
+      - service: frontend.set_theme
+        data:
+          name: mydefault
+  #set theme
+  - alias: 'Set theme at startup'
+    initial_state: 'on'
+    trigger:
+     - platform: homeassistant
+       event: start
+    action:
+      service: frontend.set_theme
+      data:
+        name: mydefault

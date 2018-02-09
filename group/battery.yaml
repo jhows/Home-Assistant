@@ -1,0 +1,7 @@
+  battery: 
+    name: Battery
+    entities: 
+      - sensor.thaless_iphone_7_battery_level
+      - sensor.thaless_iphone_7_battery_state
+      - sensor.ip_webcam_battery_level
+      # owntracks sensor - sensor.thalles_iphone

@@ -1,0 +1,358 @@
+binary_sensor.iss:
+  icon: mdi:satellite-variant
+  friendly_name: ISS Visibility
+  hidden: false
+  homebridge_hidden: true
+sensor.launch_window:
+  hidden: false
+  icon: mdi:rocket
+  friendly_name: Rocket Launch Window
+sensor.holiday:
+  hidden: true
+  icon: mdi:beach
+  friendly_name: US Holiday
+sensor.flag:
+  hidden: true
+  icon: mdi:flag
+  friendly_name: Flag Day
+sensor.day_night:
+  templates:
+    rgb_color: if (state === 'Day') return [253, 216, 53];
+sensor.external_ip:
+  friendly_name: External IP
+  icon: mdi:earth
+script.steam:
+  friendly_name: Steam Launcher
+  icon: mdi:steam
+script.radio538:
+  friendly_name: Start Playing
+  icon: mdi:play
+binary_sensor.alarm:
+  custom_ui_state_card: state-card-alarm
+  config:
+    platform: bwalarm
+    name: Home Alarm
+    code: 276491
+    pending_time: 25
+    trigger_time: 600
+    alarm: automation.alarm_triggered
+    warning: automation.alarm_warning
+    clock: true
+    perimeter_mode: false
+    weather: true
+    warning_colour: orange
+    pending_colour: orange
+    disarmed_colour: '#484848'
+    armed_home_colour: black
+    armed_away_colour: black
+    triggered_colour: red
+zone.home:
+  track_ios: true
+zone.college:
+  track_ios: true
+switch.thalles_pc:
+  custom_ui_state_card: state-card-custom-ui
+  show_last_changed: true
+  confirm_controls_show_lock: true
+  friendly_name: Gaming PC
+  icon: mdi:monitor
+  homebridge_visible: true
+light.ceiling_light_l:
+  friendly_name: Ceiling Light
+  icon: mdi:ceiling-light
+fan.ceiling_fan_l:
+  friendly_name: Ceiling Fan
+fan.ceiling_fan:
+  friendly_name: Ceiling Fan
+  homebridge_visible: true
+light.bedside_lamp:
+  icon: mdi:lamp
+  homebridge_visible: true
+light.desk_led_strip:
+  friendly_name: LED Strip Desk
+  custom_ui_state_card: state-card-custom-ui
+  icon: mdi:led-strip
+  homebridge_visible: true
+cover.bedroom_blinds:
+  homebridge_visible: true
+  homebridge_cover_type: rollershutter
+  friendly_name: Blinds
+  custom_ui_state_card: state-card-custom-ui
+  state_card_mode: break-slider
+  stretch_slider: true
+  show_last_changed: true
+  slider_theme:
+    min: 1
+    max: 100
+    pin: true
+    off_when_min: false
+    report_when_not_changed: false
+light.ceiling_light:
+  custom_ui_state_card: state-card-custom-ui
+  state_card_mode: break-slider-toggle
+  stretch_slider: true
+  show_last_changed: true
+  slider_theme:
+    min: 1
+    max: 255
+    pin: true
+    off_when_min: false
+    report_when_not_changed: false
+  icon: mdi:ceiling-light
+  homebridge_hidden: true
+sensor.dark_sky_summary:
+  custom_ui_state_card: state-card-custom-ui
+  show_last_changed: true
+  friendly_name: Summary
+sensor.dark_sky_temperature:
+  custom_ui_state_card: state-card-custom-ui
+  show_last_changed: true
+  friendly_name: Outdoor Temp
+  homebridge_mfg: Dark Sky
+  homebridge_model: Nothing
+  homebridge_name: Temperature
+  homebridge_serial: Nothing
+  icon: mdi:thermometer-lines
+sensor.dark_sky_apparent_temperature:
+  custom_ui_state_card: state-card-custom-ui
+  show_last_changed: true
+  friendly_name: Outdoor Feels Like
+  homebridge_name: Feels like
+  homebridge_mfg: Dark Sky
+  homebridge_model: Nothing
+  homebridge_serial: Nothing
+sensor.dark_sky_humidity:
+  custom_ui_state_card: state-card-custom-ui
+  show_last_changed: true
+  friendly_name: Outdoor Humidity
+sensor.dark_sky_precip_probability:
+  custom_ui_state_card: state-card-custom-ui
+  show_last_changed: true
+  friendly_name: Precip Probability
+  icon: mdi:weather-pouring
+sensor.dark_sky_precip_intensity:
+  custom_ui_state_card: state-card-custom-ui
+  show_last_changed: true
+  friendly_name: Precip Intensity
+sensor.dark_sky_daily_high_temperature:
+  custom_ui_state_card: state-card-custom-ui
+  show_last_changed: true
+  friendly_name: Outdoor Temp Max
+  homebridge_name: Temperature Max
+  homebridge_mfg: Dark Sky
+  homebridge_model: Nothing
+  homebridge_serial: Nothing
+sensor.dark_sky_daily_low_temperature:
+  custom_ui_state_card: state-card-custom-ui
+  show_last_changed: true
+  friendly_name: Outdoor Temp Min
+  homebridge_name: Temperature Min
+  homebridge_mfg: Dark Sky
+  homebridge_model: Nothing
+  homebridge_serial: Nothing
+sensor.speedtest_ping:
+  custom_ui_state_card: state-card-custom-ui
+  show_last_changed: true
+  friendly_name: Ping
+sensor.speedtest_download:
+  custom_ui_state_card: state-card-custom-ui
+  show_last_changed: true
+  friendly_name: Download
+  icon: mdi:cloud-download
+sensor.speedtest_upload:
+  custom_ui_state_card: state-card-custom-ui
+  show_last_changed: true
+  friendly_name: Upload
+  icon: mdi:cloud-upload
+input_boolean.dark_theme_status:
+  friendly_name: Auto Night Theme
+  icon: mdi:theme-light-dark
+  homebridge_name: Night Theme
+  homebridge_mfg: Hass
+  homebridge_model: Nothing
+  homebridge_serial: Nothing
+  templates:
+    rgb_color: if (state === 'on') return [253, 216, 53];
+group.alarm_clock:
+  icon: mdi:alarm
+sensor.time:
+  friendly_name: Current Time
+  icon: mdi:timetable
+sensor.alarm_clock_hour:
+  hidden: true
+sensor.alarm_clock_minute:
+  hidden: true
+sensor.alarm_clock_time_long:
+  hidden: true
+sensor.alarm_clock_time:
+  friendly_name: Alarm Set To
+  icon: mdi:alarm
+input_number.alarm_clock_hour:
+  friendly_name: Hour
+  icon: mdi:timer
+input_number.alarm_clock_minute:
+  friendly_name: Minute
+  icon: mdi:timer
+input_boolean.alarm_clock_status:
+  friendly_name: Status
+  icon: mdi:alarm-check
+  homebridge_visible: true
+  templates:
+    rgb_color: if (state === 'on') return [253, 216, 53];
+sensor.home_to_college:
+  friendly_name: Home To College (Driving)
+  icon: mdi:car
+device_tracker.thaless_iphone_7:
+  friendly_name: Thales' iPhone 7
+switch.pihole_switch:
+  friendly_name: Pi-Hole
+  entity_picture: /local/custom_icons/pihole.png
+  homebridge_visible: true
+sensor.ads_percentage_today:
+  friendly_name: Percentage of Ad Traffic Blocked
+  unit_of_measurement: '%'
+  icon: mdi:ticket-percent
+sensor.pihole_domains_being_blocked:
+  friendly_name: Total Domains Blocking
+  icon: mdi:do-not-disturb
+sensor.pihole_dns_unique_clients:
+  friendly_name: Unique Clients
+  icon: mdi:desktop-classic
+sensor.pihole_ads_blocked_today:
+  friendly_name: Ads Blocked Today
+  icon: mdi:do-not-disturb
+sensor.pihole_dns_queries_today:
+  friendly_name: DNS Queries Today
+  icon: mdi:note-text
+script.pihole_off:
+  friendly_name: Turn Pi-Hole Off
+  icon: mdi:do-not-disturb
+script.pihole_on:
+  friendly_name: Turn Pi-Hole On
+  icon: mdi:power
+sensor.cpu_temp:
+  friendly_name: CPU Temperature
+  icon: mdi:temperature-celsius
+switch.pihole_temp_disable:
+  assumed_state: true
+  friendly_name: Disable Ad Blocking
+  icon: mdi:raspberrypi
+sensor.pihole_ads_percentage_blocked_today:
+  friendly_name: Ads Blocked Today Percentage
+group.system_view: {}
+group.system: {}
+group.netspeed:
+  icon: mdi:raspberrypi
+group.weather:
+  icon: mdi:weather-partlycloudy
+group.bedroom:
+  icon: mdi:hotel
+group.livingroom:
+  icon: mdi:sofa
+group.home_status:
+  icon: mdi:home
+sensor.usd_brl:
+  friendly_name: USD BRL
+  icon: mdi:currency-usd
+automation.light_on_gradually_with_alarm:
+  friendly_name: Turn lights on with alarm
+  icon: mdi:alarm
+input_boolean.good_morning_summary:
+  friendly_name: Morning Summary
+  icon: mdi:tablet
+media_player.wall_masterbedroom:
+  friendly_name: bedroom_wall
+camera.ip_webcam:
+  friendly_name: Bedroom Camera
+script.radio_pause:
+  icon: mdi:stop
+sensor.ip_webcam_battery_level:
+  friendly_name: Wall Tablet Bedroom Battery Level
+sensor.ip_webcam_motion:
+  friendly_name: Bedroom Motion
+input_boolean.study_time:
+  icon: mdi:book-open-variant
+  homebridge_visible: true
+sensor.usd:
+  custom_ui_state_card: state-card-custom-ui
+  show_last_changed: true
+  icon: mdi:currency-usd
+switch.imac:
+  custom_ui_state_card: state-card-custom-ui
+  confirm_controls_show_lock: true
+  icon: mdi:desktop-mac
+  homebridge_visible: true
+sensor.thaless_iphone_7_battery_level:
+  custom_ui_state_card: state-card-custom-ui
+  show_last_changed: true
+sensor.thaless_iphone_7_battery_state:
+  custom_ui_state_card: state-card-custom-ui
+  show_last_changed: true
+  templates:
+    rgb_color: if (state === 'Charging') return [253, 216, 53];
+input_boolean.vacation_mode:
+  templates:
+    rgb_color: if (state === 'on') return [253, 216, 53];
+input_boolean.friend_visiting:
+  templates:
+    rgb_color: if (state === 'on') return [253, 216, 53];
+sensor.moon:
+  custom_ui_state_card: state-card-custom-ui
+  show_last_changed: true
+sensor.kodistatus:
+  icon: mdi:speaker-wireless
+  templates:
+    rgb_color: if (state === 'Playing') return [253, 216, 53];
+camera.thales_cam:
+  friendly_name: Localização Thales
+group.residence_radio:
+  friendly_name: Radio
+camera.praca_7bh:
+  friendly_name: Praça Sete BH
+media_player.kodi: {}
+input_boolean.drink_water:
+  icon: mdi:cup-water
+  templates:
+    rgb_color: if (state === 'on') return [253, 216, 53];
+sensor.proximo_valor:
+  friendly_name: Valor Acumulado
+  icon: mdi:currency-usd
+sensor.acumulado:
+  icon: mdi:help
+sensor.sorteio_date:
+  friendly_name: Último Sorteio
+  icon: mdi:calendar-range
+sensor.proxima_data:
+  icon: mdi:calendar-range
+sensor.numeros_sorteados:
+  icon: mdi:numeric
+sensor.sorteio_numero:
+  icon: mdi:ticket-confirmation
+group.default_view:
+  friendly_name: Home
+sensor.rastreio_destino:
+  friendly_name: Descrição
+  icon: mdi:format-list-bulleted
+sensor.rastreio_numero:
+  icon: mdi:barcode
+sensor.rastreio_local:
+  icon: mdi:map-marker
+sensor.rastreio_cidade:
+  icon: mdi:city
+sensor.rastreio_data:
+  icon: mdi:calendar-range
+sensor.rastreio_hora:
+  icon: mdi:clock
+switch.transmission_turtle_mode:
+  friendly_name: Turtle Mode
+  icon: mdi:gauge-low
+sensor.transmission_down_speed:
+  friendly_name: Download Speed
+  icon: mdi:download
+sensor.transmission_up_speed:
+  friendly_name: Upload Speed
+  icon: mdi:upload
+sensor.ha_uptime:
+  icon: mdi:clock
+sensor.homeassistant_v2db:
+  friendly_name: HA DB File

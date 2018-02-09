@@ -1,0 +1,4 @@
+  currency:
+    name: Currency
+    entities:
+      - sensor.usd

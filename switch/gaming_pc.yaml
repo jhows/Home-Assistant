@@ -1,0 +1,7 @@
+  - platform: wake_on_lan
+    name: "Thalles' PC"
+    mac_address: !secret thalespcmac
+    host: "192.168.1.3"
+    turn_off:
+      service: shell_command.shutdown_pc
+      

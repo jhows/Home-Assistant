@@ -1,0 +1,5 @@
+  livingroom:
+    name: Living Room
+    entities:
+      - light.ceiling_light_l
+      - fan.ceiling_fan_l

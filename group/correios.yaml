@@ -1,0 +1,9 @@
+  correios:
+    name: Correios 
+    entities:
+      - sensor.rastreio_destino
+      - sensor.rastreio_numero
+      - sensor.rastreio_local
+      - sensor.rastreio_cidade
+      - sensor.rastreio_data
+      - sensor.rastreio_hora

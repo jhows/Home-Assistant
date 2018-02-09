@@ -1,0 +1,9 @@
+  #test game notification
+  - alias: Notification when someone start GTA V
+    trigger:
+      platform: template
+      value_template: "{{ is_state_attr('sensor.steam_76561198261582146', 'game', 'Grand Theft Auto V') }}"
+    action:
+      - service: notify.ios_thaless_iphone_7
+        data:
+          message: 'Thalles is playing GTA V'

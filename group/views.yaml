@@ -1,0 +1,74 @@
+####VIEWS
+  bedroom_view:
+    view: yes
+    name: Bedroom
+    entities:
+      - group.bedroom
+      - group.alarm_clock
+      - media_player.mp_chc
+      - camera.ip_webcam
+      - group.ip_webcam_settings
+      - group.residence_radio
+  livingroom_view:
+    view: yes
+    name: Living Room
+    entities:
+      - group.home_status
+      - group.livingroom
+      - group.weather
+      - media_player.mp_chc
+      - group.residence_radio
+  cameras_view:
+    view: yes
+    name: Cameras
+    entities:
+      - camera.frontdoor_camera
+      - camera.praca_7bh
+      - camera.iss
+      - camera.thales_cam
+  weather_view:
+    view: yes
+    name: Weather
+    entities:
+      - group.weather
+  default_view:
+    view: yes
+    entities:
+      - group.home_status
+      - group.bedroom
+      - group.livingroom
+      - group.weather
+      - group.currency
+      - group.correios
+      - group.alarm_clock
+      - group.battery
+      - group.residence_radio
+      - group.netspeed
+      - group.torrent_control
+      - group.system
+      - camera.frontdoor_camera
+      - camera.outdoor
+      - group.transport
+      - media_player.mp_chc
+      - media_player.thallespc
+      - camera.ip_webcam
+      - group.steam
+      - group.ip_webcam_settings
+      - group.birthday_countdown
+      - group.reminders
+      - group.mega_sena
+      - group.dark_theme
+      - media_player.kodi
+      - media_player.spotify
+  automations_view:
+    view: yes
+    name: Automations
+    entities:
+      - automation.alarm_away_mode_arming
+      - automation.arm_alarm_at_night
+  system_view:
+    view: yes
+    name: System
+    entities:
+      - group.system
+      - group.netspeed

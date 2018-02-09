@@ -1,0 +1,20 @@
+platform: bwalarm
+name: Home Alarm
+code: !secret alarmcode
+pending_time: 25 #Grace time in seconds to allow for exit and entry using Away mode
+trigger_time: 600
+alarm: automation.alarm_triggered
+warning: automation.alarm_warning
+
+clock: True  #Optional - True enables a clock in the center of the status bar
+perimeter_mode: false #Optional - True enables perimeter mode, this could be known as 'Day Mode' i.e. only arm the doors whilst there is someone using all floors
+weather: True #Optional - Allows a weather summary to be displayed on the status bar. Dark Sky weather component must be enabled with the name sensor.dark_sky_summary
+
+#### COLOURS ###########  Use any HTML format
+warning_colour: 'orange'
+pending_colour: 'orange'
+disarmed_colour: '#484848'
+armed_home_colour: 'black'
+armed_away_colour: 'black'
+triggered_colour: 'red'
+

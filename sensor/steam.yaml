@@ -1,0 +1,14 @@
+  - platform: steam_online
+    api_key: !secret steam_api
+    accounts:
+      - !secret steamthales #Thalles
+      - !secret steamHartman #Hartman
+      - !secret steamsamuel #samuel
+      - !secret steampaulo #paulo
+      - !secret steamaturzin #aturzin
+      - !secret steamsherif #sherif
+      - !secret steamcarol #carol
+      - !secret steamleo #leo
+      - !secret steamluciano #luciano
+      - !secret steamluke #luke
+ 

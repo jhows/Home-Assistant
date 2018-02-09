@@ -1,0 +1,13 @@
+  #clear tts clache
+  - alias: Flush TTS Cache
+    trigger:
+      platform: time
+      at: '2:35:00'
+    action:
+      - service: tts.clear_cache
+      - service: notify.ios_thaless_iphone_7
+        data:
+          message: "TTS cache cleared."
+      - service: script.tweet_engine
+        data:
+          tweet: "São 2:35, isso significa que devo limpar o cache de TTS para estar tudo pronto quando amanhecer :)"

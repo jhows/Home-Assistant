@@ -1,0 +1,7 @@
+  - platform: command_line
+    switches:
+      pihole_switch:
+        command_on: !secret piholecmdon
+        command_off: !secret piholecmdoff
+        command_state: !secret piholestatus
+        value_template: "{{ value_json.status == 'enabled' }}"

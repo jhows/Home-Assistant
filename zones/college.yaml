@@ -1,0 +1,6 @@
+  - name: College
+    latitude: !secret collegelat
+    longitude: !secret collegelong
+    radius: 50
+    icon: mdi:school
+    track_ios: true

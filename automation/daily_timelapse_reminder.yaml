@@ -1,0 +1,9 @@
+  #timelaps
+  - alias: Dayli timelapse
+    trigger:
+      platform: time
+      at: '21:00:00'
+    action:
+      - service: notify.ios_thaless_iphone_7
+        data:
+          message: 'Daily timelapse reminder!'

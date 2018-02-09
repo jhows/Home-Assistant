@@ -1,0 +1,19 @@
+  #study switch
+  - alias: 'study time on'
+    trigger:
+      platform: state
+      entity_id: input_boolean.study_time
+      from: 'off'
+      to: 'on'
+    action:
+      service: script.study_time
+  - alias: 'study time off'
+    trigger:
+      platform: state
+      entity_id: input_boolean.study_time
+      from: 'on'
+      to: 'off'
+    action:
+      - service: media_player.media_stop
+        data_template:
+          entity_id: media_player.bedroom_wall

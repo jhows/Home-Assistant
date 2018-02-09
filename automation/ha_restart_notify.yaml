@@ -1,0 +1,18 @@
+  #restart notify
+  - alias: Notify of Home Assistant restart
+    trigger:
+      - platform: homeassistant
+        event: start
+    action:
+      - service: notify.ios_thaless_iphone_7
+        data:
+          message: "Home Assistant has restarted"
+      - service: notify.html5
+        data_template:
+          message: "Home Assistant has restarted"
+        data:
+          data:
+            tag: 'notification-about-restart'
+      - delay: 00:01:00
+      - service: homeassistant.turn_on
+        entity_id: input_boolean.drink_water

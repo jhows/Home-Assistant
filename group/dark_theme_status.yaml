@@ -1,0 +1,4 @@
+  dark_theme:
+    name: 'Night Theme'
+    entities:
+      - input_boolean.dark_theme_status

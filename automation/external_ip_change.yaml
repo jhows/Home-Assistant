@@ -1,0 +1,19 @@
+  - alias: Notify Of New External IP
+    initial_state: 'on'
+    trigger:
+      platform: state
+      entity_id: sensor.external_ip
+    condition:
+      - condition: template
+        value_template: "{% if trigger.from_state and trigger.to_state %} True {% else %} False {% endif %}"
+    action:
+      - service: notify.ios_thaless_iphone_7
+        data:
+          message: "Your External IP changed from {{ trigger.from_state.state }} to {{ trigger.to_state.state }}"
+      - service: script.tweet_engine
+        data_template:
+          tweet: >
+            {{ [
+            "Parece que meu endereço de IP mudou. @souzaathales, por favor cheque isto.",
+            "Hora de atualizar as coisas @souzaathales. Parece que meu endereço de IP mudou."
+            ] | random + " #HomeAutomation"}}

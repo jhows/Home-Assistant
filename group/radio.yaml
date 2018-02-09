@@ -1,0 +1,9 @@
+  Residence Radio:
+    name: Residentie Radio
+    entities:
+      - sensor.kodistatus
+      - input_select.radio_station
+      - input_select.chromecast_radio
+      - script.radio538
+      - input_number.volume_radio
+      - script.radio_pause

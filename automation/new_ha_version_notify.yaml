@@ -1,0 +1,12 @@
+  #notification about new hass version
+  - alias: Update notifications
+    trigger:
+      - platform: state
+        entity_id: updater.updater
+    action:
+      - service: notify.ios_thaless_iphone_7
+        data:
+          message: "Home Assistant {{ states('updater.updater') }} is available."
+      - service: script.tweet_engine
+        data:
+          tweet: "Nova versão do @Home_Assistant! Espero que o @souzaathales insale logo! - {{ states('updater.updater') }}"

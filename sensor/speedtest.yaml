@@ -1,0 +1,10 @@
+  - platform: speedtest
+    server_id: 10898 
+    minute:
+      - 1
+      - 0
+    monitored_conditions:
+      - ping
+      - download
+      - upload
+ 

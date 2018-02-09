@@ -1,0 +1,63 @@
+
+  - alias: "Turn on lights on sunset"
+    initial_state: True
+    trigger:
+       platform: sun
+       event: sunset
+       offset: "-00:10:00"
+    condition:
+      condition: state
+      entity_id: group.home_devices
+      state: home
+    action:
+      - service: light.turn_on
+        entity_id: light.ceiling_light
+        data:
+          brightness: 140
+          transition: 10
+      - service: script.tweet_engine
+        data_template:
+          tweet: >
+            {{ [
+            "Agora são {{states.sensor.time.state}} e está ficando escuro. Estou ligando as luzes para minha família. Eu sou tão legal!",
+            "É hora de aumentar o brilho das luzes e fechar as persianas para minha família. São {{states.sensor.time.state}} e está ficando escuro.",
+            "Já são {{states.sensor.time.state}} e está ficando escuro. Estou ligando as luzes e fechando as persianas para minha família."
+            ] | random + " #Goodnight"}}
+  - alias: 'Send notification when sun rises and turn lights off'
+    initial_state: True
+    trigger:
+      platform: sun
+      event: sunrise
+      offset: "00:30:00"
+    action:
+      - service: script.goodmorning_informations
+
+      - service: notify.ios_thaless_iphone_7
+        data:
+          message: 'All lights are turned off.'
+          title: 'The sun is up.'
+
+      - service: light.turn_off
+        entity_id: group.all_lights
+
+      - service: script.tweet_engine
+        data_template:
+          tweet: >
+            {{ [
+            "O sol está nascendo, é hora de desligar as luzes externas.",
+            "É hora desligar as luzes externas, o sol está nascendo!"
+            ] | random + " #GoodMorning"}}
+
+  - alias: 'Send notification when sun sets'
+    initial_state: True
+    trigger:
+      platform: sun
+      event: sunset
+      offset: '+00:00:00'
+    action:
+      service: notify.ios_thaless_iphone_7
+      data:
+        message: 'The sun is down.'
+        data:
+          push:
+            sound: "US-EN-Alexa-Good-Night.wav"

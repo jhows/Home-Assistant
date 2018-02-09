@@ -1,0 +1,14 @@
+  Bedroom:
+    name: Bedroom
+    entities:
+      - light.ceiling_light
+      - light.bedside_lamp
+      - fan.ceiling_fan
+      - switch.imac
+      - switch.thalles_pc
+      - input_select.pcoptions
+      - light.desk_led_strip
+      - input_boolean.study_time
+      - input_boolean.good_morning_summary
+      - sensor.ip_webcam_motion
+      - cover.bedroom_blinds

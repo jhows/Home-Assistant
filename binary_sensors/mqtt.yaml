@@ -1,0 +1,3 @@
+  - platform: mqtt
+    state_topic: dummy/alarm/sensor
+    name: Alarm

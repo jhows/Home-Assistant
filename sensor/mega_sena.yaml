@@ -1,0 +1,12 @@
+  - platform: rest
+    resource: https://www.lotodicas.com.br/api/mega-sena
+    name: Mega Sena
+    value_template: '{{ value_json.sorteio }}'
+    json_attributes:
+      - numero
+      - data
+      - sorteio
+      - acumulado
+      - valor_acumulado
+      - proximo_estimativa
+      - proximo_data

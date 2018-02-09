@@ -1,0 +1,29 @@
+  # Home status
+  - alias: "not home status from device tracker"
+    trigger:
+      - platform: state
+        entity_id: device_tracker.thaless_iphone_7
+        from: 'not_home'
+        to: "home"
+        for:
+          minutes: 3
+    action:
+      - service: input_select.select_option
+        data:
+          entity_id: input_select.thales_status
+          option: "At Home"
+
+  # Away status
+  - alias: "Set away status from device tracker"
+    trigger:
+      - platform: state
+        entity_id: device_tracker.thaless_iphone_7
+        from: 'home'
+        to: "not_home"
+        for:
+          minutes: 10
+    action:
+      - service: input_select.select_option
+        data:
+          entity_id: input_select.thales_status
+          option: "Away"

@@ -1,0 +1,5 @@
+  - platform: currencylayer
+    api_key: !secret currencylayerapi
+    base: USD
+    quote:
+      - BRL

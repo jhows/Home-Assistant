@@ -1,0 +1,28 @@
+
+  - alias: 'send notification when Thalles is on home'
+    initial_state: True
+    trigger:
+      platform: state
+      entity_id: device_tracker.thaless_iphone_7
+      from: 'not_home'
+      to: 'home'
+    action:
+      - service: notify.ios_thaless_iphone_7
+        data:
+          message: 'Dear Thalles, welcome home'
+          title: "Home Assistant"
+          data:
+            push:
+              sound: "US-EN-Alexa-Welcome-Home.wav"
+  - alias: 'send notification when Thalles left home'
+    initial_state: True
+    trigger:
+      platform: state
+      entity_id: device_tracker.thaless_iphone_7
+      from: 'home'
+      to: 'not_home'
+    action:
+      - service: notify.ios_thaless_iphone_7
+        data:
+          message: 'Bye, have a great time!'
+          title: "Home Assistant"

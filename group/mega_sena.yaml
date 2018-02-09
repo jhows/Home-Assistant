@@ -1,0 +1,10 @@
+  mega_sena:
+    name: Mega Sena
+    entities:
+      - sensor.sorteio_date
+      - sensor.proxima_data
+      - sensor.proximo_valor
+      - sensor.numeros_sorteados
+      - sensor.acumulado
+      - sensor.valor_acumulado
+      - sensor.sorteio_numero

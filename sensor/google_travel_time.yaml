@@ -1,0 +1,8 @@
+  - platform: google_travel_time
+    api_key: !secret traveltime
+    origin: zone.home
+    destination: zone.college
+    name: Home to College
+    options:
+      arrival_time: '19:00:00'
+      mode: driving

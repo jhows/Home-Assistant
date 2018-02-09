@@ -1,0 +1,3 @@
+  - platform: ios
+    name: ios
+    target: !secret iostarget

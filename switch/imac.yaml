@@ -1,0 +1,7 @@
+
+  - platform: wake_on_lan
+    name: "iMac"
+    mac_address: !secret macosmac
+    host: !secret macoshost
+    turn_off:
+      service: shell_command.shutdown_mac

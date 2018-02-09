@@ -1,0 +1,4 @@
+  configurator:
+    title: 'Configurator'
+    icon: mdi:note-text
+    url: !secret configuratorurl

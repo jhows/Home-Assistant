@@ -1,0 +1,8 @@
+  torrent_control:
+    name: Torrent Stauts 
+    entities:
+      - switch.transmission_turtle_mode
+      - sensor.transmission_status
+      - sensor.transmission_active_torrents
+      - sensor.transmission_down_speed
+      - sensor.transmission_up_speed

@@ -1,0 +1,33 @@
+  #Turn xmas tree on and off
+  - alias: xmas tree on
+    hide_entity: false
+    trigger:
+      - platform: sun
+        event: sunrise
+      - platform: sun
+        event: sunset
+        offset: "-00:15:00"
+    condition:
+      condition: template
+      value_template: '{{ now().month == 12 }}'
+    action:
+      - service: script.xmas_on
+      - service: notify.ios_thaless_iphone_7
+        data:
+          message: 'Christmas Tree lights are turned on.'
+  #turn off
+  - alias: xmas tree off
+    hide_entity: false
+    trigger:
+      - platform: time
+        at: '09:00:00'
+      - platform: time
+        at: '23:30:00'
+    condition:
+      condition: template
+      value_template: '{{ now().month == 12 }}'
+    action:
+      - service: script.xmas_off
+      - service: notify.ios_thaless_iphone_7
+        data:
+          message: 'Christmas Tree lights are turned off.'

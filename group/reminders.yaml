@@ -1,0 +1,4 @@
+  reminders:
+    name: Reminder 
+    entities: 
+      - input_boolean.drink_water

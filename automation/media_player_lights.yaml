@@ -1,0 +1,41 @@
+  - alias: "Media player paused/stopped"
+    trigger:
+      - platform: state
+        entity_id: media_player.kodi
+        from: 'playing'
+        to: 'idle'
+    condition:
+      - condition: state
+        entity_id: sun.sun
+        state: 'below_horizon'
+    action:
+        - service: scene.turn_on
+          entity_id: scene.livingroom_normal
+        - service: script.tweet_engine
+          data_template:
+            tweet: >
+              {{ [
+              "Parece que o filme acabou, já que está escuro é hora de aumentar o brilho das luzes!",
+              "Irei agora aumentar o brilho das luzes, já que o filme acabou e a TV foi desligada."
+              ] | random + " #movietime"}}
+  #light on media player start/stop
+  - alias: "Media player playing"
+    trigger:
+      - platform: state
+        entity_id: media_player.kodi
+        to: 'playing'
+        from: 'idle'
+    condition:
+      - condition: state
+        entity_id: sun.sun
+        state: 'below_horizon'
+    action:
+        - service: scene.turn_on
+          entity_id: scene.livingroom_dim
+        - service: script.tweet_engine
+          data_template:
+            tweet: >
+              {{ [
+              "Minha família começou a assistir a um filme, irei fechar as persianas e diminuir o brilho das luzes!",
+              "Irei agora abaixar o brilho das luzes e fechar as persianas, pois minha família está indo assistir a um filme na TV."
+              ] | random + " #movietime"}}

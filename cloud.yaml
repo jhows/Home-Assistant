@@ -1,0 +1,16 @@
+  alexa:
+  #  filter:
+   #   include_entities:
+   #     - light.kitchen
+   #     - light.kitchen_left
+   #   include_domains:
+   #     - switch
+   #   exclude_entities:
+   #     - switch.outside
+    entity_config:
+      light.ceiling_light:
+        name: Bedroom Light
+        description: Master Bedroom Light
+      switch.thalles_pc:
+        name: Gaming Computer
+        description: Thales' Gaming Computer

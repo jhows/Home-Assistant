@@ -1,0 +1,28 @@
+  - alias: 'pc restart'
+    trigger:
+      platform: state
+      entity_id: input_select.pcoptions
+      to: "Restart"
+    action:
+      - service: shell_command.restart_pc
+  - alias: 'pc shutdown'
+    trigger:
+      platform: state
+      entity_id: input_select.pcoptions
+      to: "Shutdown"
+    action:
+      - service: shell_command.shutdown_pc
+  - alias: 'pc lock'
+    trigger:
+      platform: state
+      entity_id: input_select.pcoptions
+      to: "Lock"
+    action:
+      - service: shell_command.lock_pc
+  - alias: 'pc sleep'
+    trigger:
+      platform: state
+      entity_id: input_select.pcoptions
+      to: "Sleep"
+    action:
+      - service: shell_command.sleep_pc   

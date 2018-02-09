@@ -1,0 +1,7 @@
+  - platform: google
+    language: 'en'
+
+  - platform: microsoft
+    api_key: !secret ttsmicrosoft
+    language: pt-br
+    type: HeloisaRUS

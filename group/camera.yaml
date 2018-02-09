@@ -1,0 +1,4 @@
+  camera:
+    name: Cameras
+    entities:
+      - camera.frontdoor_camera
