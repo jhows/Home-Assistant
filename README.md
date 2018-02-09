@@ -5,4 +5,3 @@ You can follow my home on <a href="https://twitter.com/clifffordha" target="_BLA
 
 ![alt text](https://image.prntscr.com/image/ERYXmKoGQfisj78OyJ9QZg.png)
 
-![alt text](https://image.prntscr.com/image/NBWP8EbWSW_XOjPw52egAQ.png)
