@@ -7,8 +7,24 @@
 #Credits to @CCOSTAN
 ######################## SENSOR ###########################################
 sensor:
+  - platform: history_stats
+    name: Gaming PC On
+    entity_id: switch.thalles_pc
+    state: 'on'
+    type: time
+    end: '{{ now() }}'
+    duration:
+      days: 7
+  - platform: history_stats
+    name: drink water times
+    entity_id: input_boolean.drinkwatersave
+    state: 'on'
+    type: count
+    end: '{{ now() }}'
+    duration:
+      hours: 24
   - platform: rest
-    resource: https://raw.githubusercontent.com/SouzaaThales/Home-Assistant/master/holidays.json
+    resource: https://raw.githubusercontent.com/SouzaaThales/Home-Assistant/master/www/json/holidays.json
     name: Holiday
     scan_interval: 14400
     value_template: >
@@ -65,7 +81,17 @@ notify:
     consumer_secret: !secret twitter_consumer_secret
     access_token: !secret twitter_access_token
     access_token_secret: !secret twitter_access_token_secret
-
+############################ SCRIPT ########################
+script:
+  tweet_engine:
+   sequence:
+   # - service: ifttt.trigger
+     # data_template: >
+    #    {{"event":"post_facebook_bot", "value1":"{{ tweet }} #IOT #SmartHome"}}
+    - service: notify.twitter_home
+      data_template:
+        message: >-
+          {{ tweet }} #IOT #SmartHome
 ########################## AUTOMATION #######################################
 automation:
   - alias: 'Tweet - Spotify'
@@ -183,11 +209,12 @@ automation:
           tweet: >
             {{ [
             "Hoje eu lembrei o @souzaathales de tomar água {{states.sensor.drink_water_times.state}} vezes. #hidratese",
+            "Minha base de dados do Home Assistant atualmente está usando {{states.sensor.homeassistant_v2db.state}} MBs.",
             "O Host do @home_assistant está usando atualmente {{states.sensor.disk_used_home.state}}% da minha capacidade total de armazenamento.",
             "Lá fora está fazendo {{states.sensor.dark_sky_temperature.state}} ° C e o nível de humidade é de {{states.sensor.dark_sky_humidity.state}}%. #weather!",
             "O computador de jogos do @souzaathales ficou ligado durante {{states.sensor.gaming_pc_on.state}} horas nos últimos 7 dias.",
             "Agora são {{states.sensor.time.state}} em casa. A temperatura externa é de {{states.sensor.dark_sky_temperature.state}} º C e o clima está {{states.sensor.clima.state}}.",
-            "Até agora, eu preveni {{states.sensor.pihole_ads_blocked_today.state}} anúncios via PI-Hole! http://www.pi-hole.net",
+            "Até agora, eu preveni {{states.sensor.pihole_ads_blocked_today.state}} anúncios via Pi-Hole! http://www.pi-hole.net",
             "Pi-hole (http://www.pi-hole.net) atendeu há {{states.sensor.pihole_dns_queries_today.state}} pedidos de DNS hoje! #Pi3",
             "Estou rodando a versão {{states.sensor.ha_installed_version.state}} do Home Assistant.",
             "Eu sei que estará {{states.sensor.dark_sky_hourly_summary.state}} então eu irei ajustar o ar condicionado / ventiladores, irrigação e iluminação em conformidade. #Nest #Rachio #Hue #Yeelight",
@@ -195,7 +222,7 @@ automation:
             "Home Assistant está sendo executado por {{states.sensor.ha_uptime.state}}.",
             "Minha velocidade de download de Internet da @Gtel é de aproximadamente {{states.sensor.speedtest_download.state}} Mbit / s",
             "Hoje a temperatura máxima lá fora será de {{states.sensor.dark_sky_daily_high_temperature.state}} º C e mínima de {{states.sensor.dark_sky_daily_low_temperature.state}} º C. A humidade atual é de {{states.sensor.dark_sky_humidity.state}}%",
-            "Cobertura média de nuvens: {{states.sensor.dark_sky_cloud_coverage.state}}%, e temperatura média: {{states.sensor.dark_sky_temperature.state}} ° C"
+            "Cobertura média das nuvens: {{states.sensor.dark_sky_cloud_coverage.state}}%, Temperatura média: {{states.sensor.dark_sky_temperature.state}} ° C #weather"
             ] | random + " #RandomStat"}}
   - alias: Notify Holiday State Change
     hide_entity: false
@@ -276,7 +303,7 @@ automation:
               "Obrigado por seguir " ~ handle ~ "! Um assovio de " ~ location ~ "!!",
               "Hey " ~ handle ~ "! Obrigado por seguir de " ~ location ~ " !",
               "Novo seguidor " ~ handle ~ " de " ~ location ~ ".",
-              "Boom! De " ~ location ~ " o seguidor" ~ handle ~ " me fez enviar assoviar em casa.",
+              "Boom! De " ~ location ~ " o seguidor" ~ handle ~ " me fez assoviar em casa.",
               "Quer conhecer alguém super legal? "~ handle ~" É!!! Obrigado por seguir!",
               "Se o @souzaathales estiver em casa & e eu obter um novo seguir como o " ~ handle ~ ", eu assovio!"
             ] %}
