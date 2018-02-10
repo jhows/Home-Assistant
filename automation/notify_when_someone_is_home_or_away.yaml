@@ -6,6 +6,8 @@
       entity_id: device_tracker.thaless_iphone_7
       from: 'not_home'
       to: 'home'
+      for:
+        minutes: 1
     action:
       - service: notify.ios_thaless_iphone_7
         data:
@@ -21,6 +23,8 @@
       entity_id: device_tracker.thaless_iphone_7
       from: 'home'
       to: 'not_home'
+      for:
+        minutes: 1
     action:
       - service: notify.ios_thaless_iphone_7
         data:
