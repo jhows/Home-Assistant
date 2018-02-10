@@ -1,4 +1,16 @@
-  camera:
+  frontdoor_camera:
     name: Cameras
     entities:
       - camera.frontdoor_camera
+  praca_7bh_camera:
+    name: Praça 7 BH
+    entities:
+      - camera.praca_7bh
+  iss_camera:
+    name: ISS Location
+    entities:
+      - camera.iss
+  thales_cam:
+    name: Thalles' Location
+    entities:
+      - camera.thales_cam

@@ -22,10 +22,10 @@
     view: yes
     name: Cameras
     entities:
-      - camera.frontdoor_camera
-      - camera.praca_7bh
-      - camera.iss
-      - camera.thales_cam
+      - group.frontdoor_camera
+      - group.praca_7bh_camera
+      - group.iss_camera
+      - group.thales_cam
   weather_view:
     view: yes
     name: Weather
