@@ -288,7 +288,7 @@ sensor: !include_dir_merge_list sensor
 
 tts: !include tts.yaml
 alarm_control_panel: !include alarm.yaml
-panel_custom: !include_dir_merge_list panel_custom
+panel_custom: !include panel_custom.yaml
 panel_iframe: !include_dir_merge_list panel_iframe
 group: !include_dir_merge_named group
 automation: !include_dir_merge_list automation
