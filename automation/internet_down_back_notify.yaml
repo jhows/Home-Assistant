@@ -2,8 +2,8 @@
   - alias: 'Notify internet offline'
     trigger:
       - platform: state
-        entity_id: sensor.speedtest_ping
-        to: unknown
+        entity_id: binary_sensor.ping_binary_sensor
+        to: 'off'
     action: 
       - service: notify.ios_thaless_iphone_7
         data:
@@ -12,8 +12,8 @@
   - alias: 'Notify internet comes back'
     trigger:
       - platform: state
-        entity_id: sensor.speedtest_ping
-        from: unknown
+        entity_id: binary_sensor.ping_binary_sensor
+        from: 'off'
     action: 
       - service: notify.ios_thaless_iphone_7
         data:

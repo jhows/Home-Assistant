@@ -4,17 +4,19 @@
     trigger:
        platform: sun
        event: sunset
-       offset: "-00:10:00"
+       offset: "-00:05:00"
     condition:
       condition: state
       entity_id: group.home_devices
       state: home
     action:
-      - service: light.turn_on
-        entity_id: light.ceiling_light
-        data:
-          brightness: 140
-          transition: 10
+    #  - service: light.turn_on
+     #   entity_id: light.ceiling_light
+      #  data:
+       #   brightness_pct: 5
+        #  transition: 10
+      - service: ifttt.trigger
+        data: {"event":"good_night_lights"}
       - service: script.tweet_engine
         data_template:
           tweet: >
@@ -55,9 +57,15 @@
       event: sunset
       offset: '+00:00:00'
     action:
-      service: notify.ios_thaless_iphone_7
-      data:
-        message: 'The sun is down.'
+      - service: notify.ios_thaless_iphone_7
         data:
-          push:
-            sound: "US-EN-Alexa-Good-Night.wav"
+          message: 'The sun is down.'
+          data:
+            push:
+              sound: "US-EN-Alexa-Good-Night.wav"
+      - delay: "00:05:00"
+      - service: light.turn_on
+        entity_id: light.ceiling_light
+        data:
+          brightness_pct: 15
+          transition: 10

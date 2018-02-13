@@ -137,11 +137,17 @@
     sequence:
       - service: media_player.play_media
         data:
-          entity_id: media_player.bedroom_wall
+          entity_id: media_player.kodi
           media_content_type: audio/mp3
         data_template:
           media_content_id: >
-            {{ ["http://192.168.1.2:8123/local/sounds/study01.mp3", "http://192.168.1.2:8123/local/sounds/study01.mp3", "http://192.168.1.2:8123/local/sounds/study01.mp3"] | random}}
+            {{ [
+              "https://hassio.local:8123/local/sounds/summer_night_relaxing_song.mp3", 
+              "https://hassio.local:8123/local/sounds/relaxing_sound_piano.mp3", 
+              "https://hassio.local:8123/local/sounds/reain_storm_relax.mp3",
+              "https://hassio.local:8123/local/sounds/hover_the_horizon_s6.mp3",
+              "https://hassio.local:8123/local/sounds/winter_snow_storm.mp3"
+              ] | random}}
       - service: light.turn_on
         data:
           entity_id: light.ceiling_light
@@ -180,9 +186,9 @@
             {% endif %}
           media_content_id: >
             {% if is_state("input_select.radio_station", "Coca Cola FM") %} http://ic.imusicaradios.com.br:8000/brasil.stream.http
-            {% elif is_state("input_select.radio_station", "Los Santos Rock") %} http://192.168.1.2:8123/local/sounds/lossantosrock.mp3
+            {% elif is_state("input_select.radio_station", "Los Santos Rock") %} https://hassio.local:8123/local/sounds/radio_los_santos_rock.mp3
             {% elif is_state("input_select.radio_station", "Truckers FM") %}  https://radio.truckers.fm
-            {% elif is_state("input_select.radio_station", "Cidade Caratinga") %}  http://centova.welltecnologia.com.br:8459/stream http://radio.server6.com.br:9462/;stream.mp3
+            {% elif is_state("input_select.radio_station", "Cidade Caratinga") %}  http://centova.welltecnologia.com.br:8459/stream
             {% elif is_state("input_select.radio_station", "Rádio Caratinga") %}  http://radio.server6.com.br:9462/;stream.mp3
             {% elif is_state("input_select.radio_station", "Q-Music") %} http://icecast-qmusic.cdp.triple-it.nl/Qmusic_nl_live_96.mp3
             {% elif is_state("input_select.radio_station", "3FM") %} http://icecast.omroep.nl/3fm-bb-mp3
@@ -257,9 +263,9 @@
         data:
           message: 'Gaming PC are turned off!'
           title: "Home Assistant"
-          data:
-            push:
-              sound: "gamingpcturnedoff.wav"
+      #    data:
+       #     push:
+        #      sound: "gamingpcturnedoff.wav"
   pc_on_push:
     alias: 'Pc on notification'
     sequence:
@@ -267,9 +273,9 @@
         data:
           message: 'Gaming PC are turned on!'
           title: "Home Assistant"
-          data:
-            push:
-              sound: "gamingpcturnedon.wav"
+     #     data:
+      #      push:
+       #       sound: "gamingpcturnedon.wav"
   goodmorning_informations:
     alias: 'Notification about things at morning'
     sequence:

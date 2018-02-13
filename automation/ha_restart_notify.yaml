@@ -16,3 +16,11 @@
       - delay: 00:01:00
       - service: homeassistant.turn_on
         entity_id: input_boolean.drink_water
+      - delay: 00:02:00
+      - service: notify.kodi
+        data:
+          title: "Home Assistant"
+          message: "Message to KODI from Home Assistant!"
+          data:
+            displaytime: 20000
+            icon: "warning"

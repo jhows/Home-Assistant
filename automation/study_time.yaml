@@ -16,4 +16,4 @@
     action:
       - service: media_player.media_stop
         data_template:
-          entity_id: media_player.bedroom_wall
+          entity_id: media_player.kodi
