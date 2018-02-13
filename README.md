@@ -3,5 +3,7 @@ You can follow my home on <a href="https://twitter.com/clifffordha" target="_BLA
 
 ![alt text](https://i.imgur.com/YLxJnMY.jpg)
 
-![alt text](https://image.prntscr.com/image/ERYXmKoGQfisj78OyJ9QZg.png)
+![alt text](https://github.com/SouzaaThales/Home-Assistant/blob/master/screenshots/GitHA1.png?raw=true)
+![alt text](https://github.com/SouzaaThales/Home-Assistant/blob/master/screenshots/GitHA2.png?raw=true)
+![alt text](https://github.com/SouzaaThales/Home-Assistant/blob/master/screenshots/GitHA3.png?raw=true)
 
