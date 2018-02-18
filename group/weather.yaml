@@ -1,8 +1,8 @@
   weather:
     name: Weather
     entities: 
-      - sensor.day_night
       - sensor.dark_sky_summary
+      - sensor.day_night
       - sensor.dark_sky_apparent_temperature
       - sensor.dark_sky_temperature
       - sensor.dark_sky_daily_high_temperature
@@ -10,4 +10,7 @@
       - sensor.dark_sky_humidity
       - sensor.dark_sky_precip_probability
       - sensor.dark_sky_precip_intensity
+      - sensor.dark_sky_precip
+      - sensor.dark_sky_cloud_coverage
+      - sensor.dark_sky_uv_index
       - sensor.moon_phases

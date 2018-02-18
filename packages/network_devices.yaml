@@ -1,0 +1,92 @@
+################################################################
+## Packages / Network Devices
+################################################################
+
+################################################
+## Customize
+################################################
+
+homeassistant:
+  customize:
+    ################################################
+    ## Node Anchors
+    ################################################
+
+    package.node_anchors:
+      customize: &customize
+        package: 'network_devices'
+
+      expose: &expose
+        <<: *customize
+        haaska_hidden: false
+        homebridge_hidden: false
+
+    ################################################
+    ## Group
+    ################################################
+
+    group.network_devices_source:
+      <<: *customize
+      friendly_name: "Network Devices"
+      hidden: true
+
+    group.network_devices:
+      <<: *customize
+      friendly_name: "Network Devices"
+
+    ################################################
+    ## Device Tracker
+    ################################################
+
+    device_tracker.net_bedroom_gaming_pc:
+      <<: *customize
+      friendly_name: "Gaming PC (Bedroom)"
+      hidden: true
+    device_tracker.frontdoor_camera:
+      <<: *customize
+      friendly_name: "Front Door Camera"
+      hidden: true
+
+
+    ################################################
+    ## Sensor
+    ################################################
+
+    sensor.net_bedroom_gaming_pc:
+      <<: *customize
+      friendly_name: "Gaming PC (Bedroom)"
+    sensor.net_frontdoor_camera:
+      <<: *customize
+      friendly_name: "Front Door Camera"
+
+################################################
+## Group
+################################################
+
+group:
+  network_devices_source:
+    control: hidden
+    entities:
+      - device_tracker.net_bedroom_gaming_pc
+      - device_tracker.frontdoor_camera
+
+  network_devices:
+    control: hidden
+    entities:
+      - sensor.net_bedroom_gaming_pc
+      - sensor.net_frontdoor_camera
+
+
+################################################
+## Sensor
+################################################
+
+sensor:
+  - platform: template
+    sensors:
+      net_bedroom_gaming_pc:
+        value_template: "{{ 'online' if is_state('device_tracker.bedroom_gaming_pc', 'home') else 'offline' }}"
+        icon_template: "{{ 'mdi:check-circle-outline' if is_state('device_tracker.bedroom_gaming_pc', 'home') else 'mdi:alert-circle' }}"
+      net_frontdoor_camera:
+        value_template: "{{ 'online' if is_state('device_tracker.frontdoor_camera', 'home') else 'offline' }}"
+        icon_template: "{{ 'mdi:check-circle-outline' if is_state('device_tracker.frontdoor_camera', 'home') else 'mdi:alert-circle' }}"

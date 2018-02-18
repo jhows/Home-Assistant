@@ -107,6 +107,7 @@ automation:
             {% set title = states.media_player.spotify.attributes["media_title"] %}
             {% set artist = states.media_player.spotify.attributes["media_artist"] %}
             {% set phrases = [
+            "Nós amamos ouvir músicas! Agora mesmo estamos ouvindo " ~ title ~" de "~ artist ~" no ",
             "Minha família agora está ouvindo " ~ title ~ " por " ~ artist ~ " no Spotify! ",
             "Esta casa está ouvindo " ~ title ~ " por " ~ artist ~ " no Spotify!",
             "Minha família ama Spotify, e eu também. Agora estamos ouvindo " ~ title ~ " de " ~ artist ~ "! "
@@ -129,11 +130,11 @@ automation:
           tweet: >-
             {% set game = states.sensor.steam_76561198261582146.attributes["game"] %}
             {% set phrases = [
-            "Agora o @souzaathales está jogando " ~ game ~ " na Steam! ",
+            "Agora o @souzaathales está jogando " ~ game ~ " na",
             "O @souzaathales começou a jogar " ~ game ~ "!",
-            "Agora o @souzaathales está jogando " ~ game ~ ", ele ama esse jogo hahah"
+            "Agora o @souzaathales está jogando " ~ game ~ ", é um de seus jogos favoritos!"
             ] %}
-            {{phrases|random + "#Steam" }}
+            {{phrases|random + " #Steam" }}
   - alias: Rachio_Rain_Delay
     hide_entity: True
     trigger:
@@ -186,7 +187,7 @@ automation:
             "Sério, eu sou uma casa inteligente. Estou registrando sua tentativa de hack.",
             "Se você não sabe a senha, você será bloqueado e seu IP será banido.",
             "Três tentativas e você está fora! IP bloqueado."
-            ] | random + "#Security"}}
+            ] | random + " #Security"}}
   - alias: 'Random House stats'
     hide_entity: True
     trigger:
@@ -208,9 +209,9 @@ automation:
         data_template:
           tweet: >
             {{ [
-            "Hoje eu lembrei o @souzaathales de tomar água {{states.sensor.drink_water_times.state}} vezes. #hidratese",
+            "Hoje eu lembrei o @souzaathales de tomar água {{states.sensor.drink_water_times.state}} vezes.",
             "Minha base de dados do Home Assistant atualmente está usando {{states.sensor.homeassistant_v2db.state}} MBs.",
-            "O Host do @home_assistant está usando atualmente {{states.sensor.disk_used_home.state}}% da minha capacidade total de armazenamento.",
+            "O Host do #HomeAssistant está usando atualmente {{states.sensor.disk_use_percent_home.state}}% da minha capacidade total de armazenamento.",
             "Lá fora está fazendo {{states.sensor.dark_sky_temperature.state}} ° C e o nível de humidade é de {{states.sensor.dark_sky_humidity.state}}%. #weather!",
             "O computador de jogos do @souzaathales ficou ligado durante {{states.sensor.gaming_pc_on.state}} horas nos últimos 7 dias.",
             "Agora são {{states.sensor.time.state}} em casa. A temperatura externa é de {{states.sensor.dark_sky_temperature.state}} º C e o clima está {{states.sensor.clima.state}}.",
@@ -265,7 +266,7 @@ automation:
         data_template:
           tweet: >
             {{ [
-            "Eu bloqueei {{states.sensor.pihole_ads_blocked_today.state}} anúncios. Isto é {{states.sensor.pihole_ads_percentage_blocked_today.state}}% do meu trafego de internet.",
+            "Hoje eu bloqueei {{states.sensor.pihole_ads_blocked_today.state}} anúncios. Isto é {{states.sensor.pihole_ads_percentage_blocked_today.state}}% do meu trafego de internet.",
             "Hoje eu bloqueei {{states.sensor.pihole_ads_blocked_today.state}} via Pi Hole. Anúncios, nunca mais!",
             "Hoje foi um bom dia! Sabe por que? Porque eu bloqueei {{states.sensor.pihole_ads_blocked_today.state}} anúncios via Pi-Hole!"
             ] | random + " #PiHole #Security Status:({{states.switch.pihole_switch.state}})"}}
@@ -281,7 +282,7 @@ automation:
             {{ [
             "Atualmente {{states.sensor.pihole_dns_unique_clients.state}} clientes estão conectados em minha rede.",
             "No momento tenho {{states.sensor.pihole_dns_unique_clients.state}} clientes em minha rede."
-            ] | random + "#Security"}}
+            ] | random + " #Security"}}
   - alias: 'New Twitter follower!'
     hide_entity: True
     trigger:
@@ -303,9 +304,9 @@ automation:
               "Obrigado por seguir " ~ handle ~ "! Um assovio de " ~ location ~ "!!",
               "Hey " ~ handle ~ "! Obrigado por seguir de " ~ location ~ " !",
               "Novo seguidor " ~ handle ~ " de " ~ location ~ ".",
-              "Boom! De " ~ location ~ " o seguidor" ~ handle ~ " me fez assoviar em casa.",
+              "Boom! De " ~ location ~ " o seguidor" ~ handle ~ " me fez tocar um assovio em casa.",
               "Quer conhecer alguém super legal? "~ handle ~" É!!! Obrigado por seguir!",
-              "Se o @souzaathales estiver em casa & e eu obter um novo seguir como o " ~ handle ~ ", eu assovio!"
+              "Se o @souzaathales estiver em casa & e eu obter um novo seguidor como o " ~ handle ~ ", eu assovio!"
             ] %}
             {% set hashtags = [
               "#ThanksForTheFollow #ObrigadoPorSeguir",
@@ -315,13 +316,12 @@ automation:
             {{ phrases|random ~ " " ~ hashtags|random }}
   - alias: 'ISS is above Me -Tweet'
     trigger:
-    #  - platform: state
-     #   entity_id:
-      #    - binary_sensor.iss
-       # to: 'on'
-       # from: 'off'
-      - platform: event
-        event_type: iss_above
+      - platform: state
+        entity_id: binary_sensor.iss
+        to: 'on'
+        from: 'off'
+    #  - platform: event
+     #   event_type: iss_above
     action:
       - service: script.tweet_engine
         data_template:
@@ -330,7 +330,7 @@ automation:
             "ISS está sobre mim neste momento!",
             "The International Space Station flys by once a day & that time is NOW! (For me)",
             "Posso olhar para o alto AGORA MESMO e ver a Estação Espacial Internacional.",
-            "A #ISS acaba de passar sobre mim e, atualmente {{states.binary_sensor.iss.attributes.number_of_people_in_space}} pessoas estão no",
+            "A #ISS acaba de passar sobre mim e, atualmente temos um Tesla e {{states.binary_sensor.iss.attributes.number_of_people_in_space}} pessoas estão no",
             "The International Space Station Rocks! And it's above me RIGHT NOW!"
             ] | random + " #Espaço"}}
 

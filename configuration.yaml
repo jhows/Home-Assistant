@@ -264,6 +264,7 @@ fan:
       - medium
       - high
 cloud: !include cloud.yaml
+shopping_list:
 light:
 #  - platform: flux_led
  #   devices:
@@ -285,11 +286,17 @@ shell_command:
 
 # Weather Prediction
 sensor: !include_dir_merge_list sensor
-
+#weather:
+ # - platform: darksky
+  #  api_key: !secret darksky_api
 tts: !include tts.yaml
 alarm_control_panel: !include alarm.yaml
 panel_custom: !include panel_custom.yaml
-panel_iframe: !include_dir_merge_list panel_iframe
+panel_iframe:
+  configurator:
+    title: 'Configurator'
+    icon: mdi:note-text
+    url: !secret configuratorurl
 group: !include_dir_merge_named group
 automation: !include_dir_merge_list automation
 script: !include_dir_merge_named script

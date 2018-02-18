@@ -9,4 +9,4 @@
           message: "Home Assistant {{ states('updater.updater') }} is available."
       - service: script.tweet_engine
         data:
-          tweet: "Nova versão do @Home_Assistant! Espero que o @souzaathales insale logo! - {{ states('updater.updater') }}"
+          tweet: "Nova versão do #HomeAssistant! Espero que o @souzaathales instale logo! - {{ states('updater.updater') }}"

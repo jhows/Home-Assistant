@@ -2,8 +2,8 @@
     name: Home Status
     entities:
       - device_tracker.thaless_iphone_7
-      - input_select.thales_status
       - device_tracker.taylon_brother
+      - input_select.thales_status
       - input_boolean.vacation_mode
       - input_boolean.friend_visiting
       - alarm_control_panel.home_alarm

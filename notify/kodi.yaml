@@ -1,0 +1,6 @@
+  - platform: kodi
+    name: kodi
+    host: 192.168.1.3
+    port: 8050
+    username: !secret kodiuser
+    password: !secret kodipass

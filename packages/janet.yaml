@@ -1,6 +1,7 @@
 group:
   janet_settings:
     name: Settings
+    icon: mdi:settings
     view: yes
     entities:
       - group.janet_notification_modes

@@ -2,9 +2,10 @@
     name: System
     entities:
       - sensor.cpu_temp
-      - sensor.cpu_used
-      - sensor.ram_used
-      - sensor.disk_used_home
+      - sensor.processor_use
+      - sensor.memory_use_percent
+      - sensor.disk_use_percent_home
       - sensor.disk_free_home
       - sensor.homeassistant_v2db
       - sensor.ha_uptime
+      - updater.updater

@@ -2,6 +2,7 @@
   bedroom_view:
     view: yes
     name: Bedroom
+    icon: mdi:seat-individual-suite
     entities:
       - group.bedroom
       - group.alarm_clock
@@ -11,6 +12,7 @@
       - group.residence_radio
   livingroom_view:
     view: yes
+    icon: mdi:sofa
     name: Living Room
     entities:
       - group.home_status
@@ -20,6 +22,7 @@
       - group.residence_radio
   cameras_view:
     view: yes
+    icon: mdi:cctv
     name: Cameras
     entities:
       - group.frontdoor_camera
@@ -28,10 +31,12 @@
       - group.thales_cam
   weather_view:
     view: yes
+    icon: mdi:weather-partlycloudy
     name: Weather
     entities:
       - group.weather
   default_view:
+    icon: mdi:home
     view: yes
     entities:
       - group.home_status
@@ -46,6 +51,7 @@
       - group.netspeed
       - group.torrent_control
       - group.system
+      - group.network_devices
       - camera.frontdoor_camera
       - camera.outdoor
       - group.transport
@@ -60,14 +66,17 @@
       - group.dark_theme
       - media_player.kodi
       - media_player.spotify
+#      - weather.dark_sky
   automations_view:
     view: yes
+    icon: mdi:home-automation
     name: Automations
     entities:
       - automation.alarm_away_mode_arming
       - automation.arm_alarm_at_night
   system_view:
     view: yes
+    icon: mdi:raspberrypi
     name: System
     entities:
       - group.system

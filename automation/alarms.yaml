@@ -40,12 +40,31 @@
         - condition: state
           entity_id: group.home_devices
           state: home
-        - condition: sun
-          after: sunset
-        - condition: sun
-          before: sunrise
+        - condition: time
+          after: '22:00:00'
+          before: '07:00:00'
     action:
       service: alarm_control_panel.alarm_arm_home
+      data:
+        entity_id: alarm_control_panel.home_alarm
+        code: !secret alarmcode
+  #away alarm
+  - alias: 'Arm alarm away if restart'
+    initial_state: 'on'
+    trigger:
+     - platform: homeassistant
+       event: start
+    condition:
+      condition: and
+      conditions:
+        - condition: state
+          entity_id: group.home_devices
+          state: away
+        - condition: time
+          after: '22:00:00'
+          before: '07:00:00'
+    action:
+      service: alarm_control_panel.alarm_arm_away
       data:
         entity_id: alarm_control_panel.home_alarm
         code: !secret alarmcode
@@ -152,6 +171,30 @@
         entity_id: media_player.bedroom_wall
         data:
           message: 'The house alarm has been switched on in away mode. Goodbye'
+  - alias: 'Arm alarm when family away'
+    initial_state: 'on'
+    trigger:
+      - platform: state
+        entity_id: group.home_devices
+        from: 'home'
+        to: 'not_home'
+    action:
+      service: alarm_control_panel.alarm_arm_away
+      data:
+        entity_id: alarm_control_panel.home_alarm
+        code: !secret alarmcode
+  - alias: 'disarm alarm when family away'
+    initial_state: 'on'
+    trigger:
+      - platform: state
+        entity_id: group.home_devices
+        from: 'not_home'
+        to: 'home'
+    action:
+      service: alarm_control_panel.alarm_disarm
+      data:
+        entity_id: alarm_control_panel.home_alarm
+        code: !secret alarmcode
   #alarm off
   - alias: 'Send notification when alarm tunned off'
     trigger:
