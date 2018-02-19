@@ -1,24 +1,36 @@
   alexa:
-  #  filter:
-   #   include_entities:
-   #     - light.kitchen
-   #     - light.kitchen_left
+    filter:
+      include_entities:
+        - light.ceiling_light
+        - switch.thalles_pc
+        - cover.bedroom_blinds
+        - fan.ceiling_fan
+        - switch.imac
+        - switch.pihole_switch
+        - input_boolean.drink_water
+        - media_player.kodi
+        - media_player.spotify
+        - script.radio538
+        - script.radio_pause
+        - input_boolean.alarm_clock_status
+      exclude_domains:
+         - automation
    #   include_domains:
    #     - switch
    #   exclude_entities:
    #     - switch.outside
     entity_config:
       light.ceiling_light:
-        name: Bedroom Light
+        name: Light
         description: Master Bedroom Main Light
       switch.thalles_pc:
         name: Gaming Computer
         description: Thales' Gaming Computer
       cover.bedroom_blinds:
-        name: Bedroom Blinds 
+        name: Blinds 
         description: Master Bedroom Blinds 
       fan.ceiling_fan:
-        name: Bedroom Fan 
+        name: Fan 
         description: Master Bedroom Main Fan
       switch.imac:
         name: Thales' iMac 
@@ -30,10 +42,10 @@
         name: Drink Water Reminder
         description: Drink Water Reminder 
       media_player.kodi:
-        name: Master Bedroom Kodi 
+        name: Kodi 
         description: Master Bedroom Kodi 
       media_player.spotify:
-        name: Spotify 
+        name: Home Assistant Spotify 
         description: Spotify 
       script.radio538:
         name: Start Playing Radio 
