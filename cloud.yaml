@@ -58,4 +58,8 @@
       input_boolean.alarm_clock_status:
         name: Alarm Clock 
         description: Home Assistant Alarm Clock 
+      script.good_night:
+        name: Good Night
+      script.good_morning:
+        name: Good Morning
       

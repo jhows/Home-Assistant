@@ -8,6 +8,9 @@ homeassistant:
   customize: !include customize.yaml
   packages: !include_dir_named packages
   customize_glob:
+    group.home_status_devices:
+      custom_ui_state_card: state-card-custom-ui  
+      state_card_mode: badges
     light.*:
       custom_ui_state_card: custom-ui
     cover.*:
@@ -66,7 +69,7 @@ zeroconf:
 ios:
 recorder:
   purge_interval: 2
-  purge_keep_days: 5
+  purge_keep_days: 15
   exclude:
     domains:
       - automation
@@ -264,6 +267,8 @@ fan:
       - medium
       - high
 cloud: !include cloud.yaml
+homekit:
+  pincode: '123-45-678'
 shopping_list:
 light:
 #  - platform: flux_led

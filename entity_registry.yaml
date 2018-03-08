@@ -1,0 +1,6 @@
+sensor.thaless_iphone_7_battery_state:
+  platform: ios
+  unique_id: state_thaless_iphone_7
+sensor.thaless_iphone_7_battery_level:
+  platform: ios
+  unique_id: level_thaless_iphone_7

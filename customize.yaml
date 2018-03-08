@@ -87,6 +87,8 @@ cover.bedroom_blinds:
     pin: true
     off_when_min: false
     report_when_not_changed: false
+device_tracker.thaless_iphone_7:
+  friendly_name: Thales
 light.ceiling_light:
   custom_ui_state_card: state-card-custom-ui
   state_card_mode: break-slider-toggle
@@ -202,8 +204,6 @@ input_boolean.alarm_clock_status:
 sensor.home_to_college:
   friendly_name: Home To College (Driving)
   icon: mdi:car
-device_tracker.thaless_iphone_7:
-  friendly_name: Thales' iPhone 7
 switch.pihole_switch:
   friendly_name: Pi-Hole
   entity_picture: /local/custom_icons/pihole.png
@@ -356,3 +356,19 @@ sensor.ha_uptime:
   icon: mdi:clock
 sensor.homeassistant_v2db:
   friendly_name: HA DB File
+sensor.dark_sky_precip:
+  friendly_name: Precip Type
+sensor.dark_sky_cloud_coverage:
+  friendly_name: Cloud Coverage
+sensor.dark_sky_uv_index:
+  friendly_name: UV Index
+  unit_of_measurement: UV
+sensor.memory_use_percent:
+  friendly_name: Memory Use
+sensor.disk_use_percent_home:
+  friendly_name: Disk Use /Home
+  unit_of_measurement: '%'
+sensor.disk_free_home:
+  friendly_name: Disk Free /home
+light.yeelight_white_286c07bf1716:
+  friendly_name: Bedroom Main Light
