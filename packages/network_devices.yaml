@@ -46,6 +46,10 @@ homeassistant:
       <<: *customize
       friendly_name: "Front Door Camera"
       hidden: true
+    device_tracker.echo_dot_bedroom:
+      <<: *customize
+      friendly_name: "Echo Dot Bedroom"
+      hidden: true
 
 
     ################################################
@@ -58,6 +62,9 @@ homeassistant:
     sensor.net_frontdoor_camera:
       <<: *customize
       friendly_name: "Front Door Camera"
+    sensor.echo_dot_bedroom:
+      <<: *customize
+      friendly_name: "Echo Dot Bedroom"
 
 ################################################
 ## Group
@@ -69,12 +76,14 @@ group:
     entities:
       - device_tracker.net_bedroom_gaming_pc
       - device_tracker.frontdoor_camera
+      - device_tracker.echo_dot_bedroom
 
   network_devices:
     control: hidden
     entities:
       - sensor.net_bedroom_gaming_pc
       - sensor.net_frontdoor_camera
+      - sensor.echo_dot_bedroom
 
 
 ################################################
@@ -90,3 +99,6 @@ sensor:
       net_frontdoor_camera:
         value_template: "{{ 'online' if is_state('device_tracker.frontdoor_camera', 'home') else 'offline' }}"
         icon_template: "{{ 'mdi:check-circle-outline' if is_state('device_tracker.frontdoor_camera', 'home') else 'mdi:alert-circle' }}"
+      echo_dot_bedroom:
+        value_template: "{{ 'online' if is_state('device_tracker.echo_dot_bedroom', 'home') else 'offline' }}"
+        icon_template: "{{ 'mdi:check-circle-outline' if is_state('device_tracker.echo_dot_bedroom', 'home') else 'mdi:alert-circle' }}"

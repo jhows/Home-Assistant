@@ -1,10 +1,18 @@
+#  - platform: nmap_tracker
+#    hosts:
+#      - 192.168.1.4 #thales' phone
+#      - 192.168.1.11 #taylon's phone
+#      - 192.168.1.3 #Gaming pc
+#      - 192.168.1.6 #frontdoor camera
+#      - 192.168.1.21 #granny asus
+#      - 192.168.1.8
+#    home_interval: 10
+#    scan_options: -Pn --host-timeout 5s
+#   exclude:
+#      - 192.168.1.2 #pi3 hassio
+
   - platform: nmap_tracker
-    hosts:
-      - 192.168.1.4 #thales' phone
-      - 192.168.1.11 #taylon's phone
-      - 192.168.1.3 #Gaming pc
-      - 192.168.1.6 #frontdoor camera
-      - 192.168.1.21 #granny asus
+    hosts: 192.168.1.1-50
     home_interval: 10
     exclude:
-      - 192.168.1.2 #pi3 hassio
+     - 192.168.1.2

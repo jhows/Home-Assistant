@@ -1,6 +1,6 @@
 sensor:
   - platform: rest
-    resource: https://devsberry.com/rastreamento.php?rastreio=PP365505902BR
+    resource: https://devsberry.com/rastreamento.php?rastreio=RY787931307CN
     name: Rastreamento Correios
     value_template: '{{ value_json.data }}'
     scan_interval: 14400
@@ -29,5 +29,5 @@ sensor:
         friendly_name: Encaminhado para
         value_template: '{{ states.sensor.rastreamento_correios.attributes["local"] }}'
       rastreio_numero:
-        friendly_name: Echo Dot
+        friendly_name: Led Wifi Controller
         value_template: '{{ states.sensor.rastreamento_correios.attributes["numero"] }}'
