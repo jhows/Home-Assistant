@@ -1,5 +1,5 @@
 
-  - alias: 'send notification when Thalles is on home'
+  - alias: 'send notification when Thalles is at home'
     initial_state: True
     trigger:
       platform: state
